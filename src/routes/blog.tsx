@@ -1,0 +1,50 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { Header, Footer } from "@/components/Header";
+
+export const Route = createFileRoute("/blog")({
+  head: () => ({
+    meta: [
+      { title: "Blog — ChatMingle" },
+      { name: "description", content: "Tips, stories and ideas for better conversations from the ChatMingle blog." },
+      { property: "og:title", content: "ChatMingle Blog" },
+      { property: "og:description", content: "Tips, stories and ideas for better conversations." },
+    ],
+  }),
+  component: BlogPage,
+});
+
+const POSTS = [
+  { t: "5 ways to start a great conversation", d: "Stuck on the first message? Try these openers that always work.", tag: "Conversation", emoji: "💬" },
+  { t: "Why small talk matters", d: "The science behind why even short chats can lift your mood.", tag: "Wellbeing", emoji: "🌸" },
+  { t: "Hinglish 101: common phrases", d: "Pick up the casual Indian-English mix that makes chats fun.", tag: "Culture", emoji: "🇮🇳" },
+  { t: "Chatting after a long day", d: "Wind-down rituals that include a friendly conversation.", tag: "Lifestyle", emoji: "🌙" },
+  { t: "What makes a chat feel warm?", d: "Tone, pacing, emojis — small choices that change everything.", tag: "Conversation", emoji: "💖" },
+  { t: "Conversation starters for shy people", d: "Low-pressure prompts to ease into any new chat.", tag: "Tips", emoji: "✨" },
+];
+
+function BlogPage() {
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <main className="mx-auto max-w-6xl px-4 py-16">
+        <h1 className="text-5xl font-extrabold">The <span className="text-gradient-brand">ChatMingle</span> Blog</h1>
+        <p className="mt-3 text-lg text-muted-foreground">Stories, tips and ideas to make every chat better.</p>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {POSTS.map((p) => (
+            <article key={p.t} className="card-3d rounded-2xl glass p-6 shadow-soft">
+              <div className="flex h-28 items-center justify-center rounded-xl bg-gradient-brand text-5xl">
+                {p.emoji}
+              </div>
+              <span className="mt-4 inline-block rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">{p.tag}</span>
+              <h2 className="mt-3 text-xl font-bold leading-tight">{p.t}</h2>
+              <p className="mt-2 text-sm text-muted-foreground">{p.d}</p>
+              <button className="mt-4 text-sm font-semibold text-gradient-brand">Read more →</button>
+            </article>
+          ))}
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}
