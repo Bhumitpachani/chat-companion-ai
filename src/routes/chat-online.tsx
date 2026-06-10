@@ -66,7 +66,7 @@ function ChatOnlinePage() {
             <span className="bg-gradient-to-r from-blue-500 to-pink-500 bg-clip-text text-transparent">Chat Online Free</span> — Talk to Girls Online Instantly
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-gray-600">
-            Want to <strong>chat online free</strong> with a friendly girl? ChatMingle makes it instant, easy, and completely free. No signup form, no email, no app download — just open the website, enter a name, and start talking.
+            Want to <strong>chat online free</strong> with a friendly AI companion? ChatMingle makes it instant, easy, and completely free. No signup form, no email, no app download — just open the website, enter a name, and start talking.
           </p>
 
           <button

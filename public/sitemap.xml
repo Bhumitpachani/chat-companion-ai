@@ -39,6 +39,28 @@
     <priority>0.6</priority>
   </url>
 
+  <!-- Legal pages -->
+  <url>
+    <loc>https://www.chatmingle.online/terms</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.chatmingle.online/privacy</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- #1 SEO priority — Omegle alternative (highest traffic keyword) -->
+  <url>
+    <loc>https://www.chatmingle.online/omegle-alternative</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
   <!-- SEO landing pages -->
   <url>
     <loc>https://www.chatmingle.online/free-chat-app</loc>
@@ -75,12 +97,6 @@
     <lastmod>2026-06-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.chatmingle.online/omegle-alternative</loc>
-    <lastmod>2026-06-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.95</priority>
   </url>
 
 </urlset>

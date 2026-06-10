@@ -28,6 +28,28 @@ const FALLBACKS = [
   "sorry ek second ke liye hang ho gaya — repeat please? 💕",
 ];
 
+// Companion sends first message — picked by name hash so same companion always opens the same way
+const OPENERS = [
+  "heyy",
+  "oye",
+  "hii 👋",
+  "hello hello",
+  "heyyy",
+  "yo wassup",
+  "hii!",
+  "oye oye kaun hai",
+  "heyyy kya chal raha hai",
+  "finally, hi 😂",
+  "hii kaisa hai",
+  "hey!",
+];
+
+function pickOpener(name: string): string {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return OPENERS[h % OPENERS.length];
+}
+
 function pickFallback(used: Set<string>): string {
   const pool = FALLBACKS.filter((f) => !used.has(f));
   const choice = (pool.length ? pool : FALLBACKS)[Math.floor(Math.random() * (pool.length || FALLBACKS.length))];
@@ -65,6 +87,18 @@ function ChatPage() {
     setUserName(u);
     setCompanion(c);
   }, [navigate]);
+
+  // Companion sends the first message automatically
+  useEffect(() => {
+    if (!companion) return;
+    setTyping(true);
+    const delay = 1000 + Math.random() * 1200;
+    const t = setTimeout(() => {
+      setTyping(false);
+      setMessages([{ id: crypto.randomUUID(), role: "assistant", content: pickOpener(companion), time: nowTime() }]);
+    }, delay);
+    return () => clearTimeout(t);
+  }, [companion]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -138,7 +172,7 @@ function ChatPage() {
         <style>{`div::-webkit-scrollbar{display:none}`}</style>
         <div className="px-3 py-4 sm:px-6">
 
-          {messages.length === 0 && companion && (
+          {messages.length === 0 && !typing && companion && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="flex h-24 w-24 items-center justify-center rounded-full text-4xl font-extrabold text-white shadow-xl mb-5"
                 style={{ background: "linear-gradient(135deg, #ec4899, #8b5cf6)" }}>

@@ -117,7 +117,15 @@ export function Footer() {
         </div>
       </div>
       <div className="mx-auto mt-8 max-w-6xl border-t border-gray-100 px-4 pt-6 text-center text-xs text-gray-400">
-        © {new Date().getFullYear()} ChatMingle. Made with 💖 for meaningful conversations.
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <Link to="/terms" className="hover:text-gray-600 transition-colors">Terms of Service</Link>
+          <span>·</span>
+          <Link to="/privacy" className="hover:text-gray-600 transition-colors">Privacy Policy</Link>
+          <span>·</span>
+          <Link to="/about" className="hover:text-gray-600 transition-colors">About</Link>
+        </div>
+        <p className="mt-3">© {new Date().getFullYear()} ChatMingle. Made with 💖 for meaningful conversations.</p>
+        <p className="mt-1 text-gray-300">AI Entertainment Platform — All companions are AI characters, not real people.</p>
       </div>
     </footer>
   );

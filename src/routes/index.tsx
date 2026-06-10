@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { Header, Footer } from "@/components/Header";
 
 export const Route = createFileRoute("/")({
@@ -334,6 +334,21 @@ function HomePage() {
             >
               Start Chat now
             </button>
+          </div>
+        </section>
+
+        {/* ── Omegle Alternative Banner ── */}
+        <section className="border-t border-gray-100 bg-blue-50 py-8">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
+              <div>
+                <p className="text-sm font-bold text-blue-800">Looking for an Omegle alternative? Omegle is shut down (2023).</p>
+                <p className="mt-0.5 text-sm text-blue-600">ChatMingle is India's best Omegle replacement — free, Hinglish, no signup, no strangers.</p>
+              </div>
+              <Link to="/omegle-alternative" className="shrink-0 rounded-full bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow hover:bg-blue-700 transition-colors">
+                See Omegle Alternative →
+              </Link>
+            </div>
           </div>
         </section>
 

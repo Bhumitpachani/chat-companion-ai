@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { pickUniqueCompanion, randomTrait } from "@/lib/companions";
 const logoAsset = { url: "/logo.png" };
@@ -23,6 +23,7 @@ function StartPage() {
   const navigate = useNavigate();
   const [stage, setStage] = useState<Stage>("name");
   const [name, setName] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [progress, setProgress] = useState(0);
   const [companion, setCompanion] = useState<string>("");
 
@@ -85,10 +86,26 @@ function StartPage() {
               maxLength={30}
               className="mt-6 w-full rounded-2xl border border-border bg-card px-5 py-4 text-lg font-medium outline-none ring-ring focus:ring-2"
             />
+            {/* AI Disclosure + consent — legally required */}
+            <label className="mt-5 flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-pink-500"
+              />
+              <span className="text-xs leading-relaxed text-muted-foreground">
+                I understand that all companions on ChatMingle are{" "}
+                <strong className="text-foreground">AI characters, not real people</strong>. This is an AI entertainment platform. I am 18+ and I agree to the{" "}
+                <Link to="/terms" className="text-pink-500 underline hover:text-pink-700">Terms of Service</Link>
+                {" "}and{" "}
+                <Link to="/privacy" className="text-pink-500 underline hover:text-pink-700">Privacy Policy</Link>.
+              </span>
+            </label>
             <button
               type="submit"
-              disabled={name.trim().length < 2}
-              className="mt-5 w-full rounded-full bg-gradient-brand py-3.5 text-base font-bold text-white shadow-brand transition-transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+              disabled={name.trim().length < 2 || !agreed}
+              className="mt-4 w-full rounded-full bg-gradient-brand py-3.5 text-base font-bold text-white shadow-brand transition-transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
             >
               Find me a chat →
             </button>
