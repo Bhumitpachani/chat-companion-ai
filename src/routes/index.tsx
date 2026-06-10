@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Header, Footer } from "@/components/Header";
-import logoAsset from "@/assets/chatmingle-logo.png.asset.json";
+const logoAsset = { url: "/logo.png" };
 
 export const Route = createFileRoute("/")({
   head: () => ({

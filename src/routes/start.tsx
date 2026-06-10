@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { pickUniqueCompanion, randomTrait } from "@/lib/companions";
-import logoAsset from "@/assets/chatmingle-logo.png.asset.json";
+const logoAsset = { url: "/logo.png" };
 
 export const Route = createFileRoute("/start")({
   head: () => ({

@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import logoAsset from "@/assets/chatmingle-logo.png.asset.json";
+
+const logoAsset = { url: "/logo.png" };
 
 const NAV = [
   { to: "/" as const, label: "Home" },
