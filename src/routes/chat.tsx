@@ -28,6 +28,20 @@ const FALLBACKS = [
   "sorry ek second ke liye hang ho gaya — repeat please? 💕",
 ];
 
+// Short follow-up messages sent when user goes silent for ~7s — sounds natural
+const NUDGES = [
+  "hey you there?",
+  "hello??",
+  "kya hua suddenly quiet ho gaye 😅",
+  "yooo",
+  "oi",
+  "still there?",
+  "busy ho kya",
+  "arey hello",
+  "you disappeared on me 😂",
+  "hello ji 👋",
+];
+
 // Companion sends first message — picked by name hash so same companion always opens the same way
 const OPENERS = [
   "heyy",
@@ -77,6 +91,13 @@ function ChatPage() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fallbackUsed = useRef<Set<string>>(new Set());
 
+  // Refs for human-like timing
+  const openerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const openerTypingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const openerCancelledRef = useRef(false);
+  const noReplyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const nudgeAbortRef = useRef(false);
+
   useEffect(() => {
     let u = "", c = "";
     try {
@@ -88,16 +109,69 @@ function ChatPage() {
     setCompanion(c);
   }, [navigate]);
 
-  // Companion sends the first message automatically
+  // ── Human-like timing helpers ────────────────────────────────────────────
+
+  // Stop any pending no-reply timer and mark any in-progress nudge as aborted
+  function clearNoReplyTimer() {
+    if (noReplyTimerRef.current) { clearTimeout(noReplyTimerRef.current); noReplyTimerRef.current = null; }
+    nudgeAbortRef.current = true;
+  }
+
+  // Sends a casual follow-up message after silence
+  async function sendNudge() {
+    nudgeAbortRef.current = false;
+    setTyping(true);
+    // Short "typing" pause — nudges are brief so keep it under 1.5s
+    await new Promise(r => setTimeout(r, 700 + Math.random() * 800));
+    // If user sent a message while we were waiting, abort silently
+    // (submitMessage manages typing/sending state from here)
+    if (nudgeAbortRef.current) return;
+    const nudge = NUDGES[Math.floor(Math.random() * NUDGES.length)];
+    setTyping(false);
+    setMessages(m => [...m, { id: crypto.randomUUID(), role: "assistant", content: nudge, time: nowTime() }]);
+  }
+
+  // Start a 7–9 s countdown; fires sendNudge if user stays silent
+  function startNoReplyTimer() {
+    clearNoReplyTimer();
+    nudgeAbortRef.current = false;
+    const delay = 7000 + Math.random() * 2000; // 7–9 s
+    noReplyTimerRef.current = setTimeout(() => { void sendNudge(); }, delay);
+  }
+
+  // Clean up all timers on unmount
+  useEffect(() => {
+    return () => {
+      clearNoReplyTimer();
+      if (openerTimerRef.current) clearTimeout(openerTimerRef.current);
+      if (openerTypingTimerRef.current) clearTimeout(openerTypingTimerRef.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Companion sends first message — waits ~3 s before opening ────────────
   useEffect(() => {
     if (!companion) return;
-    setTyping(true);
-    const delay = 1000 + Math.random() * 1200;
-    const t = setTimeout(() => {
+    openerCancelledRef.current = false;
+
+    // Show typing indicator after a natural pause (~0.8–1.4 s)
+    openerTypingTimerRef.current = setTimeout(() => {
+      if (!openerCancelledRef.current) setTyping(true);
+    }, 800 + Math.random() * 600);
+
+    // Send the actual opener ~3 s after entering the room
+    openerTimerRef.current = setTimeout(() => {
+      if (openerCancelledRef.current) { setTyping(false); return; }
       setTyping(false);
       setMessages([{ id: crypto.randomUUID(), role: "assistant", content: pickOpener(companion), time: nowTime() }]);
-    }, delay);
-    return () => clearTimeout(t);
+      startNoReplyTimer(); // Begin watching for user reply
+    }, 2800 + Math.random() * 700); // 2.8–3.5 s
+
+    return () => {
+      clearTimeout(openerTypingTimerRef.current!);
+      clearTimeout(openerTimerRef.current!);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companion]);
 
   useEffect(() => {
@@ -113,6 +187,15 @@ function ChatPage() {
   const submitMessage = async () => {
     const text = input.trim();
     if (!text || sending) return;
+
+    // If the opener hasn't fired yet, cancel it (user went first)
+    openerCancelledRef.current = true;
+    if (openerTimerRef.current) { clearTimeout(openerTimerRef.current); openerTimerRef.current = null; }
+    if (openerTypingTimerRef.current) { clearTimeout(openerTypingTimerRef.current); openerTypingTimerRef.current = null; }
+
+    // Cancel any pending no-reply nudge (user is now typing)
+    clearNoReplyTimer();
+
     const userMsg: Msg = { id: crypto.randomUUID(), role: "user", content: text, time: nowTime() };
     setMessages((m) => [...m, userMsg]);
     setInput("");
@@ -123,11 +206,13 @@ function ChatPage() {
       const { reply } = await send({ data: { messages: history, companionName: companion, userName } });
       await new Promise((r) => setTimeout(r, typingDelay(reply)));
       setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: reply, time: nowTime() }]);
+      startNoReplyTimer(); // Watch for user reply after AI responds
     } catch (err) {
       console.error(err);
       const fallback = pickFallback(fallbackUsed.current);
       await new Promise((r) => setTimeout(r, typingDelay(fallback)));
       setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: fallback, time: nowTime() }]);
+      startNoReplyTimer();
     } finally {
       setTyping(false);
       setSending(false);
