@@ -17,7 +17,7 @@ function AboutPage() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="mx-auto max-w-3xl px-4 py-16">
+      <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
         <h1 className="text-5xl font-extrabold">About <span className="text-gradient-brand">ChatMingle</span></h1>
         <p className="mt-5 text-lg text-muted-foreground">
           ChatMingle was built around one simple idea: everyone deserves a friendly chat at the end of a long day.

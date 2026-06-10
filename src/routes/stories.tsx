@@ -41,7 +41,7 @@ function StoriesPage() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
+      <main className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
         <header className="text-center">
           <span className="inline-block rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-semibold text-muted-foreground">In-depth reads & community</span>
           <h1 className="mt-4 text-4xl font-extrabold sm:text-5xl md:text-6xl">

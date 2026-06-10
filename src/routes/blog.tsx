@@ -26,7 +26,7 @@ function BlogPage() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="mx-auto max-w-6xl px-4 py-16">
+      <main className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
         <h1 className="text-5xl font-extrabold">The <span className="text-gradient-brand">ChatMingle</span> Blog</h1>
         <p className="mt-3 text-lg text-muted-foreground">Stories, tips and ideas to make every chat better.</p>
 

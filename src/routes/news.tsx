@@ -24,7 +24,7 @@ function NewsPage() {
   return (
     <div className="min-h-screen">
       <Header />
-      <main className="mx-auto max-w-3xl px-4 py-16">
+      <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
         <h1 className="text-5xl font-extrabold">Latest <span className="text-gradient-brand">News</span></h1>
         <p className="mt-3 text-lg text-muted-foreground">Updates, releases, and announcements.</p>
 

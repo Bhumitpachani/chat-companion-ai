@@ -56,7 +56,7 @@ function HomePage() {
           <div className="pointer-events-none absolute -top-32 -left-32 h-[500px] w-[500px] rounded-full bg-blue-100 opacity-40 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-24 h-[400px] w-[400px] rounded-full bg-pink-100 opacity-50 blur-3xl" />
 
-          <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-20 md:grid-cols-2 md:gap-16 md:py-28">
+          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 sm:px-8 sm:py-20 md:grid-cols-2 md:gap-16 md:py-28">
 
             {/* Left — text */}
             <div className="text-center md:text-left">
@@ -169,7 +169,7 @@ function HomePage() {
         </section>
 
         {/* ── Features ── */}
-        <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
+        <section className="mx-auto max-w-7xl px-5 py-14 sm:px-8 md:py-20">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
               Why people love <span className="text-gradient-brand">ChatMingle</span>
@@ -189,7 +189,7 @@ function HomePage() {
 
         {/* ── How it works ── */}
         <section className="bg-gray-50 py-14 md:py-20">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <div className="text-center">
               <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">How it works</h2>
               <p className="mx-auto mt-3 max-w-xl text-gray-500">Three tiny steps and you're chatting.</p>
@@ -207,7 +207,7 @@ function HomePage() {
         </section>
 
         {/* ── Showcase ── */}
-        <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
+        <section className="mx-auto max-w-7xl px-5 py-14 sm:px-8 md:py-20">
           <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
             <div className="relative order-2 md:order-1">
               <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[3rem] bg-gradient-to-br from-blue-100 to-pink-100 opacity-60 blur-2xl" />
@@ -247,7 +247,7 @@ function HomePage() {
 
         {/* ── Testimonials ── */}
         <section className="bg-gray-50 py-14 md:py-20">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
             <div className="text-center">
               <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Loved by chatters everywhere</h2>
               <p className="mx-auto mt-3 max-w-xl text-gray-500">A few words from people who made ChatMingle part of their day.</p>
@@ -265,7 +265,7 @@ function HomePage() {
         </section>
 
         {/* ── Stats banner ── */}
-        <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <section className="mx-auto max-w-7xl px-5 py-14 sm:px-8">
           <div className="grid gap-6 rounded-3xl bg-gradient-to-r from-blue-500 to-pink-500 p-8 text-center text-white shadow-xl sm:grid-cols-4 sm:p-10">
             {[
               { k: "50k+", v: "Chats started" },
@@ -282,7 +282,7 @@ function HomePage() {
         </section>
 
         {/* ── FAQ ── */}
-        <section className="mx-auto max-w-3xl px-4 py-14 sm:px-6 md:py-20">
+        <section className="mx-auto max-w-5xl px-5 py-14 sm:px-8 md:py-20">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Frequently asked</h2>
             <p className="mt-3 text-gray-500">Quick answers to the things people usually wonder about.</p>
