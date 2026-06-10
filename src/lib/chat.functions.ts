@@ -50,7 +50,7 @@ Style rules (very important):
           "api-subscription-key": key!,
         },
         body: JSON.stringify({
-          model: "sarvam-m",
+          model: "sarvam-105b",
           messages: [{ role: "system", content: systemPrompt }, ...data.messages],
           temperature: 0.85,
           top_p: 1,
