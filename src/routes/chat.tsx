@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { ArrowLeft } from "lucide-react";
 import { sendChat } from "@/lib/chat.functions";
 import { randomTrait } from "@/lib/companions";
-import logoAsset from "@/assets/chatmingle-logo.png.asset.json";
 
 export const Route = createFileRoute("/chat")({
   head: () => ({
@@ -21,6 +21,22 @@ function nowTime() {
   return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
+const FALLBACKS = [
+  "Arre yaar, network thoda slow lag raha hai 😅 ek baar phir try karo?",
+  "Oops, lagta hai connection thoda hiccup hua. Phir se bhejogi?",
+  "Hmm, message reach nahi hua properly 😬 thoda sa wait karke try karo?",
+  "Sorry yaar, ek second ke liye sab freeze ho gaya. Repeat please? 💖",
+  "Arre, kuch toh gadbad hui — ek baar resend karo na?",
+];
+
+function pickFallback(used: Set<string>): string {
+  const pool = FALLBACKS.filter((f) => !used.has(f));
+  const choice = (pool.length ? pool : FALLBACKS)[Math.floor(Math.random() * (pool.length || FALLBACKS.length))];
+  used.add(choice);
+  if (used.size >= FALLBACKS.length) used.clear();
+  return choice;
+}
+
 function ChatPage() {
   const navigate = useNavigate();
   const send = useServerFn(sendChat);
@@ -33,6 +49,7 @@ function ChatPage() {
   const [confirmEnd, setConfirmEnd] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fallbackUsed = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     let u = "", c = "";
@@ -46,11 +63,10 @@ function ChatPage() {
     }
     setUserName(u);
     setCompanion(c);
-    // greeting
     setMessages([{
       id: "greet",
       role: "assistant",
-      content: `Hi ${u}! 💖 I'm ${c}. So nice to meet you yaar! How's your day going?`,
+      content: `Hi ${u}! 💖 I'm ${c}, so nice to finally meet you yaar! How are you doing today?`,
       time: nowTime(),
     }]);
   }, [navigate]);
@@ -73,16 +89,15 @@ function ChatPage() {
 
     try {
       const history = [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
-      const { reply } = await send({ data: { messages: history, companionName: companion } });
-      // small natural delay
-      await new Promise((r) => setTimeout(r, 400));
+      const { reply } = await send({ data: { messages: history, companionName: companion, userName } });
+      await new Promise((r) => setTimeout(r, 350));
       setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: reply, time: nowTime() }]);
     } catch (err) {
       console.error(err);
       setMessages((m) => [...m, {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: "Arre, network thoda slow hai 😅 ek baar phir bhejo?",
+        content: pickFallback(fallbackUsed.current),
         time: nowTime(),
       }]);
     } finally {
@@ -97,54 +112,58 @@ function ChatPage() {
   };
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-[100dvh] flex-col">
       {/* Chat header */}
       <header className="glass border-b border-border/60">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
-            <img src={logoAsset.url} alt="ChatMingle" className="h-8 w-auto" />
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="relative">
+        <div className="mx-auto grid max-w-3xl grid-cols-[auto_1fr_auto] items-center gap-3 px-3 py-2.5 sm:px-4 sm:py-3">
+          <button
+            onClick={() => setConfirmEnd(true)}
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card hover:bg-muted"
+            aria-label="Back"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="relative shrink-0">
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-brand text-lg font-bold text-white shadow-brand">
                 {companion ? companion[0] : "?"}
               </div>
               <span className="absolute -right-0.5 -bottom-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500" />
             </div>
-            <div className="leading-tight">
-              <div className="font-bold">{companion}</div>
-              <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            <div className="min-w-0 leading-tight">
+              <div className="truncate font-bold">{companion}</div>
+              <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
                 <span className="rounded-full bg-secondary px-1.5 py-0.5 font-semibold text-secondary-foreground">AI companion</span>
-                <span>· online</span>
+                <span className="truncate">· online</span>
               </div>
             </div>
           </div>
           <button
             onClick={() => setConfirmEnd(true)}
-            className="rounded-full border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm font-semibold text-destructive hover:bg-destructive/20"
+            className="rounded-full border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-semibold text-destructive hover:bg-destructive/20 sm:px-4 sm:text-sm"
           >
-            End chat
+            End
           </button>
         </div>
       </header>
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-3xl px-4 py-6">
+        <div className="mx-auto max-w-3xl px-3 py-5 sm:px-4 sm:py-6">
           {companion && (
-            <div className="mx-auto mb-6 max-w-md rounded-2xl glass p-4 text-center text-sm shadow-soft">
-              <div className="font-semibold">You're now chatting with {companion}</div>
+            <div className="mx-auto mb-5 max-w-md rounded-2xl glass p-4 text-center text-sm shadow-soft">
+              <div className="font-semibold">You are now chatting with {companion}</div>
               <div className="mt-1 text-xs text-muted-foreground">{randomTrait(companion)} · Be kind and have fun 💖</div>
             </div>
           )}
           <div className="space-y-3">
             {messages.map((m) => (
               <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`group max-w-[78%] ${m.role === "user" ? "items-end" : "items-start"} flex flex-col`}>
+                <div className={`group flex max-w-[85%] flex-col sm:max-w-[78%] ${m.role === "user" ? "items-end" : "items-start"}`}>
                   <div className={
                     m.role === "user"
                       ? "rounded-2xl rounded-br-md bg-gradient-brand px-4 py-2.5 text-white shadow-soft"
-                      : "rounded-2xl rounded-bl-md bg-card px-4 py-2.5 text-foreground shadow-soft border border-border/60"
+                      : "rounded-2xl rounded-bl-md border border-border/60 bg-card px-4 py-2.5 text-foreground shadow-soft"
                   }>
                     <div className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</div>
                   </div>
@@ -168,13 +187,13 @@ function ChatPage() {
       </div>
 
       {/* Composer */}
-      <div className="border-t border-border/60 glass">
-        <form onSubmit={handleSend} className="mx-auto flex max-w-3xl gap-2 px-4 py-3">
+      <div className="border-t border-border/60 glass pb-[env(safe-area-inset-bottom)]">
+        <form onSubmit={handleSend} className="mx-auto flex max-w-3xl gap-2 px-3 py-3 sm:px-4">
           <input
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={`Message ${companion}…`}
+            placeholder={`Message ${companion || ""}…`}
             maxLength={2000}
             disabled={sending}
             className="flex-1 rounded-full border border-border bg-card px-5 py-3 text-sm outline-none ring-ring focus:ring-2 disabled:opacity-60"
@@ -182,7 +201,7 @@ function ChatPage() {
           <button
             type="submit"
             disabled={!input.trim() || sending}
-            className="rounded-full bg-gradient-brand px-6 py-3 text-sm font-bold text-white shadow-brand transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+            className="shrink-0 rounded-full bg-gradient-brand px-5 py-3 text-sm font-bold text-white shadow-brand transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 sm:px-6"
           >
             Send
           </button>
@@ -194,7 +213,7 @@ function ChatPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-3xl bg-card p-6 shadow-brand">
             <h3 className="text-xl font-extrabold">End this chat?</h3>
-            <p className="mt-2 text-sm text-muted-foreground">You'll be returned to the home page. You can always start a new chat with someone else.</p>
+            <p className="mt-2 text-sm text-muted-foreground">You will be returned to the home page. You can always start a new chat with someone else.</p>
             <div className="mt-6 flex gap-2">
               <button
                 onClick={() => setConfirmEnd(false)}

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StoriesRouteImport } from './routes/stories'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as ChatRouteImport } from './routes/chat'
@@ -16,6 +17,11 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const StoriesRoute = StoriesRouteImport.update({
+  id: '/stories',
+  path: '/stories',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StartRoute = StartRouteImport.update({
   id: '/start',
   path: '/start',
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof ChatRoute
   '/news': typeof NewsRoute
   '/start': typeof StartRoute
+  '/stories': typeof StoriesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/chat': typeof ChatRoute
   '/news': typeof NewsRoute
   '/start': typeof StartRoute
+  '/stories': typeof StoriesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,13 +79,29 @@ export interface FileRoutesById {
   '/chat': typeof ChatRoute
   '/news': typeof NewsRoute
   '/start': typeof StartRoute
+  '/stories': typeof StoriesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/blog' | '/chat' | '/news' | '/start'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/chat'
+    | '/news'
+    | '/start'
+    | '/stories'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/blog' | '/chat' | '/news' | '/start'
-  id: '__root__' | '/' | '/about' | '/blog' | '/chat' | '/news' | '/start'
+  to: '/' | '/about' | '/blog' | '/chat' | '/news' | '/start' | '/stories'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/chat'
+    | '/news'
+    | '/start'
+    | '/stories'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -87,10 +111,18 @@ export interface RootRouteChildren {
   ChatRoute: typeof ChatRoute
   NewsRoute: typeof NewsRoute
   StartRoute: typeof StartRoute
+  StoriesRoute: typeof StoriesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/stories': {
+      id: '/stories'
+      path: '/stories'
+      fullPath: '/stories'
+      preLoaderRoute: typeof StoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/start': {
       id: '/start'
       path: '/start'
@@ -143,6 +175,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChatRoute: ChatRoute,
   NewsRoute: NewsRoute,
   StartRoute: StartRoute,
+  StoriesRoute: StoriesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
