@@ -10,11 +10,11 @@ export const Route = createFileRoute("/chat-online")({
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Chat Online Free — Talk to Girls Online | ChatMingle" },
       { property: "og:description", content: "Free online chat with girls. No signup, instant match. Talk online now!" },
-      { property: "og:url", content: "https://chatmingle.app/chat-online" },
+      { property: "og:url", content: "https://www.chatmingle.app/chat-online" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://chatmingle.app/chat-online" }],
+    links: [{ rel: "canonical", href: "https://www.chatmingle.app/chat-online" }],
   }),
   component: ChatOnlinePage,
 });
@@ -23,8 +23,8 @@ const BREADCRUMB_SCHEMA = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://chatmingle.app/" },
-    { "@type": "ListItem", "position": 2, "name": "Chat Online Free", "item": "https://chatmingle.app/chat-online" },
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.app/" },
+    { "@type": "ListItem", "position": 2, "name": "Chat Online Free", "item": "https://www.chatmingle.app/chat-online" },
   ],
 });
 

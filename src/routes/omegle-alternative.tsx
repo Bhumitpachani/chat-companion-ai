@@ -10,13 +10,13 @@ export const Route = createFileRoute("/omegle-alternative")({
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
       { property: "og:title", content: "Omegle Alternative India — Chat with Girls Free | ChatMingle" },
       { property: "og:description", content: "The best Omegle alternative for Indians. Chat with girls free, in Hinglish, no signup. Safer and smarter than Omegle." },
-      { property: "og:url", content: "https://chatmingle.app/omegle-alternative" },
+      { property: "og:url", content: "https://www.chatmingle.app/omegle-alternative" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Omegle Alternative India — ChatMingle" },
       { name: "twitter:description", content: "Best Omegle alternative for Indians. Chat with girls free, Hinglish, no signup." },
     ],
-    links: [{ rel: "canonical", href: "https://chatmingle.app/omegle-alternative" }],
+    links: [{ rel: "canonical", href: "https://www.chatmingle.app/omegle-alternative" }],
   }),
   component: OmegleAlternativePage,
 });
@@ -25,8 +25,8 @@ const BREADCRUMB_SCHEMA = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://chatmingle.app/" },
-    { "@type": "ListItem", "position": 2, "name": "Omegle Alternative", "item": "https://chatmingle.app/omegle-alternative" },
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.app/" },
+    { "@type": "ListItem", "position": 2, "name": "Omegle Alternative", "item": "https://www.chatmingle.app/omegle-alternative" },
   ],
 });
 

@@ -10,11 +10,11 @@ export const Route = createFileRoute("/chat-rooms")({
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Free Chat Rooms India — ChatMingle" },
       { property: "og:description", content: "Free online chat rooms to talk with girls. No signup, private & cozy. Start now!" },
-      { property: "og:url", content: "https://chatmingle.app/chat-rooms" },
+      { property: "og:url", content: "https://www.chatmingle.app/chat-rooms" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://chatmingle.app/chat-rooms" }],
+    links: [{ rel: "canonical", href: "https://www.chatmingle.app/chat-rooms" }],
   }),
   component: ChatRoomsPage,
 });
@@ -23,8 +23,8 @@ const BREADCRUMB_SCHEMA = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://chatmingle.app/" },
-    { "@type": "ListItem", "position": 2, "name": "Free Chat Rooms", "item": "https://chatmingle.app/chat-rooms" },
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.app/" },
+    { "@type": "ListItem", "position": 2, "name": "Free Chat Rooms", "item": "https://www.chatmingle.app/chat-rooms" },
   ],
 });
 

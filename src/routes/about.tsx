@@ -9,7 +9,7 @@ export const Route = createFileRoute("/about")({
       { name: "keywords", content: "about ChatMingle, free chat app India, chat with girls app, AI girlfriend India, dating chat app about, Indian chat app" },
       { property: "og:title", content: "About ChatMingle — Free Chat with Girls App" },
       { property: "og:description", content: "India's free chat app to talk with girls. AI girlfriend, dating chat in Hinglish. Learn more about ChatMingle." },
-      { property: "og:url", content: "https://chatmingle.app/about" },
+      { property: "og:url", content: "https://www.chatmingle.app/about" },
     ],
   }),
   component: AboutPage,

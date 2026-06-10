@@ -11,7 +11,7 @@ export const Route = createFileRoute("/start")({
       { name: "keywords", content: "start chat with girl free, chat with girls now, free girl chat no signup, talk to girls online free, instant chat with girls, free dating chat start" },
       { property: "og:title", content: "Start Chat Free — ChatMingle | Chat with Girls Online Now" },
       { property: "og:description", content: "Start chatting with girls free. No signup. Get matched instantly on ChatMingle." },
-      { property: "og:url", content: "https://chatmingle.app/start" },
+      { property: "og:url", content: "https://www.chatmingle.app/start" },
     ],
   }),
   component: StartPage,

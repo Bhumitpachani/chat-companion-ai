@@ -10,11 +10,11 @@ export const Route = createFileRoute("/free-dating-app")({
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Free Dating App India — ChatMingle | Chat with Girls No Payment" },
       { property: "og:description", content: "India's best free dating app. Romantic chat with girls, no signup, no payment. Start now!" },
-      { property: "og:url", content: "https://chatmingle.app/free-dating-app" },
+      { property: "og:url", content: "https://www.chatmingle.app/free-dating-app" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://chatmingle.app/free-dating-app" }],
+    links: [{ rel: "canonical", href: "https://www.chatmingle.app/free-dating-app" }],
   }),
   component: FreeDatingAppPage,
 });
@@ -23,8 +23,8 @@ const BREADCRUMB_SCHEMA = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://chatmingle.app/" },
-    { "@type": "ListItem", "position": 2, "name": "Free Dating App", "item": "https://chatmingle.app/free-dating-app" },
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.app/" },
+    { "@type": "ListItem", "position": 2, "name": "Free Dating App", "item": "https://www.chatmingle.app/free-dating-app" },
   ],
 });
 
