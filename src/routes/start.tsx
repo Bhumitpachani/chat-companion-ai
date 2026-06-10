@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Header } from "@/components/Header";
 import { pickUniqueCompanion, randomTrait } from "@/lib/companions";
 const logoAsset = { url: "/logo.png" };
 
@@ -70,7 +69,6 @@ function StartPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-16">
         {stage === "name" && (
           <form onSubmit={handleStart} className="w-full rounded-3xl glass p-8 shadow-brand">
