@@ -52,8 +52,10 @@ Style rules (very important):
         body: JSON.stringify({
           model: "sarvam-105b",
           messages: [{ role: "system", content: systemPrompt }, ...data.messages],
+          reasoning_effort: null,
           temperature: 0.85,
-          top_p: 1,
+          frequency_penalty: 0.65,
+          presence_penalty: 0.35,
           max_tokens: 400,
         }),
       });
@@ -79,8 +81,16 @@ Style rules (very important):
     }
 
     const json = (await res.json()) as {
-      choices?: { message?: { content?: string } }[];
+      choices?: { finish_reason?: string; message?: { content?: string | null; reasoning_content?: string | null } }[];
     };
-    const reply = json.choices?.[0]?.message?.content?.trim() || "Hmm, ek second ruko 😅 kya bola tumne?";
+    const firstChoice = json.choices?.[0];
+    const reply = firstChoice?.message?.content?.trim();
+    if (!reply) {
+      console.error("Sarvam empty response", {
+        finishReason: firstChoice?.finish_reason,
+        hasReasoning: Boolean(firstChoice?.message?.reasoning_content),
+      });
+      throw new Error("Empty AI response");
+    }
     return { reply };
   });
