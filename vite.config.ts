@@ -12,4 +12,14 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  nitro: {
+    preset: "vercel",
+  },
+  vite: {
+    server: {
+      host: "0.0.0.0",
+      port: 5000,
+      allowedHosts: true,
+    },
+  },
 });
