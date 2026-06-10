@@ -24,12 +24,12 @@ export function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 w-full transition-all duration-300">
+    <header className={`sticky top-0 z-40 w-full transition-all duration-300 ${scrolled ? "pt-3 pb-1 px-4" : ""}`}>
       {/* Capsule wrapper — grows to full-width at top, shrinks to floating pill on scroll */}
       <div
         className={`transition-all duration-300 ease-in-out ${
           scrolled
-            ? "mx-auto mt-3 max-w-3xl rounded-full border border-white/50 shadow-xl backdrop-blur-2xl bg-white/75"
+            ? "mx-auto max-w-3xl rounded-full border border-white/50 shadow-xl backdrop-blur-2xl bg-white/75"
             : "w-full border-b border-white/30 backdrop-blur-xl bg-white/60"
         }`}
       >
