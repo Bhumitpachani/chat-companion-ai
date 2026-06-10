@@ -95,8 +95,8 @@ function StartPage() {
                 className="mt-0.5 h-4 w-4 shrink-0 accent-pink-500"
               />
               <span className="text-xs leading-relaxed text-muted-foreground">
-                I understand that all companions on ChatMingle are{" "}
-                <strong className="text-foreground">AI characters, not real people</strong>. This is an AI entertainment platform. I am 18+ and I agree to the{" "}
+                I understand that all companions on ChatMingle {" "}
+                 This is an ai entertainment platform. I am 18+ and I agree to the{" "}
                 <Link to="/terms" className="text-pink-500 underline hover:text-pink-700">Terms of Service</Link>
                 {" "}and{" "}
                 <Link to="/privacy" className="text-pink-500 underline hover:text-pink-700">Privacy Policy</Link>.
