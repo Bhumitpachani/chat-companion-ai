@@ -28,42 +28,6 @@ const FALLBACKS = [
   "sorry ek second ke liye hang ho gaya — repeat please? 💕",
 ];
 
-// Short follow-up messages sent when user goes silent for ~7s — sounds natural
-const NUDGES = [
-  "hey you there?",
-  "hello??",
-  "kya hua suddenly quiet ho gaye 😅",
-  "yooo",
-  "oi",
-  "still there?",
-  "busy ho kya",
-  "arey hello",
-  "you disappeared on me 😂",
-  "hello ji 👋",
-];
-
-// Companion sends first message — picked by name hash so same companion always opens the same way
-const OPENERS = [
-  "heyy",
-  "oye",
-  "hii 👋",
-  "hello hello",
-  "heyyy",
-  "yo wassup",
-  "hii!",
-  "oye oye kaun hai",
-  "heyyy kya chal raha hai",
-  "finally, hi 😂",
-  "hii kaisa hai",
-  "hey!",
-];
-
-function pickOpener(name: string): string {
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-  return OPENERS[h % OPENERS.length];
-}
-
 function pickFallback(used: Set<string>): string {
   const pool = FALLBACKS.filter((f) => !used.has(f));
   const choice = (pool.length ? pool : FALLBACKS)[Math.floor(Math.random() * (pool.length || FALLBACKS.length))];
@@ -97,6 +61,8 @@ function ChatPage() {
   const openerCancelledRef = useRef(false);
   const noReplyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nudgeAbortRef = useRef(false);
+  // Always holds the latest messages so timer callbacks don't get stale closure
+  const messagesRef = useRef<Msg[]>([]);
 
   useEffect(() => {
     let u = "", c = "";
@@ -109,6 +75,9 @@ function ChatPage() {
     setCompanion(c);
   }, [navigate]);
 
+  // Keep messagesRef current so timer callbacks always read the latest messages
+  useEffect(() => { messagesRef.current = messages; }, [messages]);
+
   // ── Human-like timing helpers ────────────────────────────────────────────
 
   // Stop any pending no-reply timer and mark any in-progress nudge as aborted
@@ -117,25 +86,38 @@ function ChatPage() {
     nudgeAbortRef.current = true;
   }
 
-  // Sends a casual follow-up message after silence
+  // Sends an AI-generated follow-up after silence — never static, always unique
   async function sendNudge() {
     nudgeAbortRef.current = false;
     setTyping(true);
-    // Short "typing" pause — nudges are brief so keep it under 1.5s
-    await new Promise(r => setTimeout(r, 700 + Math.random() * 800));
-    // If user sent a message while we were waiting, abort silently
-    // (submitMessage manages typing/sending state from here)
-    if (nudgeAbortRef.current) return;
-    const nudge = NUDGES[Math.floor(Math.random() * NUDGES.length)];
-    setTyping(false);
-    setMessages(m => [...m, { id: crypto.randomUUID(), role: "assistant", content: nudge, time: nowTime() }]);
+    try {
+      // Pass real conversation + a hidden meta-instruction so the AI generates
+      // a natural short follow-up entirely in character (not from a fixed list)
+      const nudgeHistory = [
+        ...messagesRef.current.map(m => ({ role: m.role as "user" | "assistant", content: m.content })),
+        {
+          role: "user" as const,
+          content: "[You sent a message and they haven't replied. Send ONE very short, casual follow-up exactly like a real person would when ignored — stay 100% in character. Max 6 words.]",
+        },
+      ];
+      const { reply } = await send({ data: { messages: nudgeHistory, companionName: companion, userName } });
+      if (nudgeAbortRef.current) { setTyping(false); return; }
+      // Short typing delay (capped at 1.5 s since nudges are brief)
+      await new Promise(r => setTimeout(r, Math.min(typingDelay(reply), 1500)));
+      if (nudgeAbortRef.current) { setTyping(false); return; }
+      setTyping(false);
+      setMessages(m => [...m, { id: crypto.randomUUID(), role: "assistant", content: reply, time: nowTime() }]);
+    } catch {
+      // Silent fail — don't show an error banner for a background nudge
+      if (!nudgeAbortRef.current) setTyping(false);
+    }
   }
 
-  // Start a 7–9 s countdown; fires sendNudge if user stays silent
+  // Start a 10–12 s countdown; fires sendNudge if user stays silent
   function startNoReplyTimer() {
     clearNoReplyTimer();
     nudgeAbortRef.current = false;
-    const delay = 7000 + Math.random() * 2000; // 7–9 s
+    const delay = 10000 + Math.random() * 2000; // 10–12 s
     noReplyTimerRef.current = setTimeout(() => { void sendNudge(); }, delay);
   }
 
@@ -149,6 +131,33 @@ function ChatPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // AI-generated opener — unique every conversation, never from a fixed list
+  async function sendOpener() {
+    if (openerCancelledRef.current) { setTyping(false); return; }
+    try {
+      const { reply } = await send({
+        data: {
+          messages: [{
+            role: "user",
+            content: "[You just matched with someone new on a chat app. Send your very first opening message — short, casual, completely in your own natural style. Just a simple greeting to start.]",
+          }],
+          companionName: companion,
+          userName,
+        },
+      });
+      if (openerCancelledRef.current) { setTyping(false); return; }
+      setTyping(false);
+      setMessages([{ id: crypto.randomUUID(), role: "assistant", content: reply, time: nowTime() }]);
+      startNoReplyTimer();
+    } catch {
+      if (!openerCancelledRef.current) {
+        setTyping(false);
+        setMessages([{ id: crypto.randomUUID(), role: "assistant", content: "heyy", time: nowTime() }]);
+        startNoReplyTimer();
+      }
+    }
+  }
+
   // ── Companion sends first message — waits ~3 s before opening ────────────
   useEffect(() => {
     if (!companion) return;
@@ -159,13 +168,8 @@ function ChatPage() {
       if (!openerCancelledRef.current) setTyping(true);
     }, 800 + Math.random() * 600);
 
-    // Send the actual opener ~3 s after entering the room
-    openerTimerRef.current = setTimeout(() => {
-      if (openerCancelledRef.current) { setTyping(false); return; }
-      setTyping(false);
-      setMessages([{ id: crypto.randomUUID(), role: "assistant", content: pickOpener(companion), time: nowTime() }]);
-      startNoReplyTimer(); // Begin watching for user reply
-    }, 2800 + Math.random() * 700); // 2.8–3.5 s
+    // Call AI for the opener ~3 s after entering the room
+    openerTimerRef.current = setTimeout(() => { void sendOpener(); }, 2800 + Math.random() * 700);
 
     return () => {
       clearTimeout(openerTypingTimerRef.current!);
