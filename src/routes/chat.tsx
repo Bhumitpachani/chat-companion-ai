@@ -146,9 +146,6 @@ function ChatPage() {
               </div>
               <div className="text-xl font-bold text-gray-800">{companion}</div>
               <div className="mt-1 text-sm text-gray-400">{randomTrait(companion)}</div>
-              <div className="mt-5 rounded-2xl bg-white border border-gray-200 px-5 py-3 text-sm text-gray-500 shadow-sm">
-                👋 Say hi first! {companion} is waiting…
-              </div>
             </div>
           )}
 
