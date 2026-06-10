@@ -4,10 +4,12 @@ import { Header, Footer } from "@/components/Header";
 export const Route = createFileRoute("/news")({
   head: () => ({
     meta: [
-      { title: "News — ChatMingle" },
-      { name: "description", content: "Latest updates, announcements and product news from ChatMingle." },
-      { property: "og:title", content: "ChatMingle News" },
-      { property: "og:description", content: "Latest updates and announcements from ChatMingle." },
+      { title: "News — ChatMingle | Free Chat with Girls App Updates" },
+      { name: "description", content: "Latest news and updates from ChatMingle — India's free online chat app to talk with girls. New features, AI girlfriend updates, dating chat improvements." },
+      { name: "keywords", content: "ChatMingle news, free chat app updates, chat with girls app news, AI girlfriend app updates, dating chat India news" },
+      { property: "og:title", content: "ChatMingle News — Free Chat App Updates" },
+      { property: "og:description", content: "Latest news from ChatMingle — India's free chat with girls app." },
+      { property: "og:url", content: "https://chatmingle.app/news" },
     ],
   }),
   component: NewsPage,

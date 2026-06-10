@@ -4,7 +4,7 @@ import { Header, Footer } from "@/components/Header";
 export const Route = createFileRoute("/stories")({
   head: () => ({
     meta: [
-      { title: "Stories — ChatMingle" },
+      { title: "Stories — ChatMingle | Real Chat with Girls Experiences" },
       { name: "description", content: "Real stories, in-depth reads and community highlights from ChatMingle." },
       { property: "og:title", content: "ChatMingle Stories" },
       { property: "og:description", content: "Real stories, in-depth reads and community highlights." },

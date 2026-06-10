@@ -4,10 +4,14 @@ import { Header, Footer } from "@/components/Header";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ChatMingle — Start a fun conversation" },
-      { name: "description", content: "Meet new companions, chat warmly, and unwind. Start a free chat on ChatMingle in seconds." },
-      { property: "og:title", content: "ChatMingle — Start a fun conversation" },
-      { property: "og:description", content: "Meet new companions, chat warmly, and unwind. Start a free chat on ChatMingle in seconds." },
+      { title: "ChatMingle — Chat with Girls Free Online | AI Girlfriend & Dating Chat App" },
+      { name: "description", content: "Chat with girls free online on ChatMingle. Talk to Indian girls in Hinglish & English, get an AI girlfriend experience, free dating chat — no signup, 100% free. Start chatting now!" },
+      { name: "keywords", content: "chat with girl free, chat with girls online free, free chat app, dating chat app, chat with Indian girls, AI girlfriend, virtual girlfriend, romantic chat, free dating app India, talk to girls online, girl chat, flirt chat, chat companion India, Hinglish chat app" },
+      { property: "og:title", content: "ChatMingle — Chat with Girls Free Online | Free Dating Chat App" },
+      { property: "og:description", content: "Chat with girls free online. AI girlfriend, dating chat, romantic companion in Hinglish & English. No signup needed, 100% free." },
+      { property: "og:url", content: "https://chatmingle.app/" },
+      { name: "twitter:title", content: "ChatMingle — Chat with Girls Free Online" },
+      { name: "twitter:description", content: "Chat with girls free. AI girlfriend, dating chat in Hinglish. No signup, 100% free." },
     ],
   }),
   component: HomePage,
@@ -41,11 +45,30 @@ const FAQS = [
   { q: "Are my chats private?", a: "Conversations stay between you and your companion and aren't shared elsewhere." },
   { q: "Can I end a chat anytime?", a: "Of course. Hit the End Chat button at any time and you'll return to the home page." },
   { q: "Will I get matched with the same person twice?", a: "Each session matches you with a fresh companion so every chat feels new." },
+  { q: "Can I chat with girls for free on ChatMingle?", a: "Yes! ChatMingle is a 100% free chat app where you can talk with girls online — no signup, no payment needed. Just enter your name and start chatting instantly." },
+  { q: "Is ChatMingle a dating app?", a: "ChatMingle is a free AI chat companion app. You can have warm, friendly, and romantic conversations with your AI companion — perfect for people who enjoy dating-style chats without the pressure." },
+  { q: "Can I chat in Hinglish?", a: "Absolutely. Your companion speaks natural Hinglish and English — the casual mix that most Indians use every day. No formal robotic replies." },
+  { q: "Is there a real girl on ChatMingle?", a: "Your companion is a smart AI trained to talk like a real Indian girl — casual, warm, and fun. Conversations feel very natural and human." },
 ];
+
+const FAQ_SCHEMA = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": FAQS.map((f) => ({
+    "@type": "Question",
+    "name": f.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": f.a,
+    },
+  })),
+});
 
 function HomePage() {
   const navigate = useNavigate();
   return (
+    <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: FAQ_SCHEMA }} />
     <div className="min-h-screen bg-white">
       <Header />
       <main>
@@ -314,8 +337,26 @@ function HomePage() {
           </div>
         </section>
 
+        {/* ── SEO keyword section (visually subtle, semantically rich) ── */}
+        <section className="border-t border-gray-100 bg-gray-50 py-10">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <h2 className="text-lg font-bold text-gray-700">Chat with Girls Free Online — ChatMingle</h2>
+            <p className="mt-2 text-sm leading-relaxed text-gray-500">
+              ChatMingle is India's best free chat app to <strong>talk to girls online</strong>. Whether you're looking for a <strong>free dating chat</strong>, an <strong>AI girlfriend</strong> experience, or just a friendly <strong>romantic companion</strong> to talk to — ChatMingle has you covered. Chat in <strong>Hinglish and English</strong>, no signup needed, completely free. Meet Indian girls online, start a <strong>flirt chat</strong>, or simply have a warm conversation any time of day or night.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[
+                "Chat with girl free","Chat with girls online","Free dating chat","AI girlfriend","Virtual girlfriend","Romantic chat app","Talk to girls online","Free chat app India","Hinglish chat","Indian dating app","Flirt chat","Chat companion","Girl chat online","Online dating India","Free girl chat","Chat with random girls",
+              ].map((kw) => (
+                <span key={kw} className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs text-gray-500">{kw}</span>
+              ))}
+            </div>
+          </div>
+        </section>
+
       </main>
       <Footer />
     </div>
+    </>
   );
 }

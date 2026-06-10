@@ -6,10 +6,12 @@ const logoAsset = { url: "/logo.png" };
 export const Route = createFileRoute("/start")({
   head: () => ({
     meta: [
-      { title: "Start Chat — ChatMingle" },
-      { name: "description", content: "Pick a name and get matched with a friendly companion in seconds." },
-      { property: "og:title", content: "Start Chat — ChatMingle" },
-      { property: "og:description", content: "Pick a name and get matched in seconds." },
+      { title: "Start Chat Free — ChatMingle | Chat with Girls Online Now" },
+      { name: "description", content: "Start chatting with girls for free right now. No signup needed. Get matched with a friendly Indian girl companion in seconds on ChatMingle." },
+      { name: "keywords", content: "start chat with girl free, chat with girls now, free girl chat no signup, talk to girls online free, instant chat with girls, free dating chat start" },
+      { property: "og:title", content: "Start Chat Free — ChatMingle | Chat with Girls Online Now" },
+      { property: "og:description", content: "Start chatting with girls free. No signup. Get matched instantly on ChatMingle." },
+      { property: "og:url", content: "https://chatmingle.app/start" },
     ],
   }),
   component: StartPage,

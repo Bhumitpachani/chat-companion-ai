@@ -4,10 +4,12 @@ import { Header, Footer } from "@/components/Header";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — ChatMingle" },
-      { name: "description", content: "Learn about ChatMingle, a warm and friendly chat experience built to brighten your day." },
-      { property: "og:title", content: "About ChatMingle" },
-      { property: "og:description", content: "Learn about ChatMingle, a warm and friendly chat experience built to brighten your day." },
+      { title: "About ChatMingle — Free Chat with Girls App | AI Girlfriend Dating Chat India" },
+      { name: "description", content: "Learn about ChatMingle — India's free chat app to talk with girls online. AI girlfriend experience, dating chat, romantic companion in Hinglish & English. Built for Indian users." },
+      { name: "keywords", content: "about ChatMingle, free chat app India, chat with girls app, AI girlfriend India, dating chat app about, Indian chat app" },
+      { property: "og:title", content: "About ChatMingle — Free Chat with Girls App" },
+      { property: "og:description", content: "India's free chat app to talk with girls. AI girlfriend, dating chat in Hinglish. Learn more about ChatMingle." },
+      { property: "og:url", content: "https://chatmingle.app/about" },
     ],
   }),
   component: AboutPage,

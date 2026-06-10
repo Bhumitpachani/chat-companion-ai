@@ -1,0 +1,105 @@
+# COPY THIS PROMPT AND GIVE IT TO YOUR AI
+
+---
+
+You are an expert SEO engineer. I have a website: a **free chat app and free dating app** where people can chat online. Add complete, powerful SEO to my website so Google can index it fast and rank it high. Do ALL of the following:
+
+## 1. Create these files
+
+**robots.txt** (in root folder `/robots.txt`)
+- Allow all search engines to crawl public pages
+- Block private pages: /chat/private, /messages, /admin, /api, /login, /settings
+- Add link to my sitemap at the bottom
+
+**sitemap.xml** (in root folder `/sitemap.xml`)
+- Include: homepage, signup page, all landing pages, blog pages, FAQ page
+- Add `<lastmod>`, `<changefreq>`, and `<priority>` tags (homepage = 1.0)
+- If my site is dynamic, write code to auto-generate the sitemap
+
+**site.webmanifest** — app name, description, icons, theme color (helps mobile + PWA)
+
+## 2. Add meta tags to EVERY page (in `<head>`)
+
+- Unique `<title>` (max 60 characters, keyword first)
+- Unique `<meta name="description">` (max 155 characters, with call-to-action)
+- `<link rel="canonical">` on every page
+- `<meta name="robots" content="index, follow">` on public pages
+- Open Graph tags: og:title, og:description, og:image (1200x630), og:url, og:type
+- Twitter Card tags: twitter:card = summary_large_image
+- `<html lang="en">` and viewport meta tag
+
+Example for homepage:
+- Title: "Free Chat App – Chat & Date Online for Free | [MyAppName]"
+- Description: "Meet new people and chat for free. 100% free dating and chat app. No payment, no credit card. Join now and start chatting!"
+
+## 3. Add Schema.org structured data (JSON-LD) — very important for Google
+
+Add these JSON-LD scripts in the `<head>`:
+
+**WebSite schema** — with name, url, and SearchAction (for sitelinks search box)
+
+**Organization schema** — name, logo, url, sameAs (social media links)
+
+**WebApplication schema** — like this:
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "[MyAppName]",
+  "url": "https://mywebsite.com",
+  "applicationCategory": "SocialNetworkingApplication",
+  "operatingSystem": "Web, Android, iOS",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free chat and dating app to meet new people online."
+}
+```
+
+**FAQPage schema** — create a FAQ page with 8–10 questions like "Is this chat app really free?", "How do I start chatting?", "Is it safe?" and add FAQPage JSON-LD so Google shows rich results
+
+**BreadcrumbList schema** on inner pages
+
+## 4. Create SEO landing pages (this brings traffic)
+
+Create separate pages, each one targeting one keyword group, each with 600+ words of unique content, H1, H2s, internal links, and FAQ section:
+
+- /free-chat-app — keyword: "free chat app"
+- /free-dating-app — keyword: "free dating app", "dating app without payment"
+- /chat-online — keyword: "chat online free", "talk to strangers"
+- /chat-rooms — keyword: "free chat rooms"
+- /meet-new-people — keyword: "meet new people online"
+- /[city or country pages] — like /dating-in-india, /chat-usa (local SEO)
+
+Link all pages to each other (internal linking) and put links in the footer.
+
+## 5. Technical SEO and speed (Core Web Vitals)
+
+- If my site is React/Vue/SPA: add Server-Side Rendering (SSR) or pre-rendering, because Google cannot index pure JavaScript pages well. Tell me the best option for my stack.
+- Compress and lazy-load all images, use WebP format, add alt text with keywords
+- Add width/height to images (no layout shift)
+- Minify CSS/JS, enable gzip/brotli compression, add caching headers
+- Make sure the site is 100% mobile friendly
+- Target: PageSpeed score 90+ on mobile
+- Add 301 redirects from http→https and www→non-www (only one version)
+- Create a custom 404 page with links back to home
+
+## 6. Indexing plan (tell me the exact steps)
+
+Give me step-by-step instructions to:
+1. Verify my site in Google Search Console
+2. Submit my sitemap.xml there
+3. Use "URL Inspection → Request Indexing" for my main pages
+4. Verify in Bing Webmaster Tools too
+5. Check indexing with `site:mywebsite.com` search
+
+## 7. Give me a 30-day SEO content plan
+
+- 2 blog posts per week with titles targeting keywords like "best free chat apps 2026", "how to start a conversation on a dating app", "online dating safety tips"
+- Each post: 1000+ words, H1/H2 structure, internal links to my landing pages, meta title + description
+
+## Output format
+
+Give me the complete code for every file, tell me exactly which folder/path each file goes in, and explain anything I must change manually (like my domain name, app name, and logo URL). My tech stack is: [WRITE YOUR STACK HERE — example: Next.js / React / WordPress / plain HTML+PHP]
+
+---
+
+# END OF PROMPT

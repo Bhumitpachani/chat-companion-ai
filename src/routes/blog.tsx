@@ -4,10 +4,12 @@ import { Header, Footer } from "@/components/Header";
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Blog — ChatMingle" },
-      { name: "description", content: "Tips, stories and ideas for better conversations from the ChatMingle blog." },
-      { property: "og:title", content: "ChatMingle Blog" },
-      { property: "og:description", content: "Tips, stories and ideas for better conversations." },
+      { title: "Blog — ChatMingle | Tips to Chat with Girls Online Free" },
+      { name: "description", content: "Read the ChatMingle blog for tips on how to chat with girls online, start conversations, use Hinglish, and make every free chat on ChatMingle better." },
+      { name: "keywords", content: "how to chat with girls online, chat tips India, Hinglish conversation tips, free chat app tips, dating chat tips, talk to girls online guide" },
+      { property: "og:title", content: "ChatMingle Blog — Chat with Girls Tips & Stories" },
+      { property: "og:description", content: "Tips on chatting with girls free online. Hinglish phrases, conversation starters, dating chat guides." },
+      { property: "og:url", content: "https://chatmingle.app/blog" },
     ],
   }),
   component: BlogPage,

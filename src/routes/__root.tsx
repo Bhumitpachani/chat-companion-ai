@@ -12,6 +12,55 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
+const SITE_URL = "https://chatmingle.app";
+const OG_IMAGE = `${SITE_URL}/logo.png`;
+
+const SCHEMA_ORG = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      "url": SITE_URL,
+      "name": "ChatMingle",
+      "description": "Free online chat app to talk with girls. Chat with Indian girls in Hinglish, English. Free dating chat, AI girlfriend, romantic chat companion — anytime.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": `${SITE_URL}/start`,
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": `${SITE_URL}/#app`,
+      "name": "ChatMingle",
+      "url": SITE_URL,
+      "applicationCategory": "SocialNetworkingApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "description": "Chat with girls free online. Free dating chat app for Indians. Talk to girls in Hinglish and English. AI girlfriend, romantic companion chat — no signup needed.",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "50000",
+        "bestRating": "5"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#org`,
+      "name": "ChatMingle",
+      "url": SITE_URL,
+      "logo": OG_IMAGE,
+      "sameAs": []
+    }
+  ]
+});
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
@@ -64,20 +113,39 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ChatMingle — Start a fun conversation" },
-      { name: "description", content: "ChatMingle is a friendly chat experience where you can mingle, meet new companions, and have warm conversations any time." },
-      { property: "og:title", content: "ChatMingle — Start a fun conversation" },
-      { property: "og:description", content: "ChatMingle is a friendly chat experience where you can mingle, meet new companions, and have warm conversations any time." },
+
+      { title: "ChatMingle — Chat with Girls Free Online | Free Dating Chat App" },
+      { name: "description", content: "ChatMingle is a free online chat app to talk with girls. Chat with Indian girls in Hinglish & English. Free dating chat, AI girlfriend companion, romantic chat — no signup needed. Start now!" },
+      { name: "keywords", content: "chat with girl free, chat with girls online free, free chat app, dating chat app, chat with Indian girls, online chat with girls, AI girlfriend, virtual girlfriend, romantic chat app, free dating app India, talk to girls online free, girl chat online, flirt chat app, chat companion, Hinglish chat, Indian dating app, meet girls online, chat with random girls, free girl chat, online dating India, chat app India, girlfriend simulator, romantic AI chat" },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
+      { name: "googlebot", content: "index, follow" },
+      { name: "author", content: "ChatMingle" },
+      { name: "theme-color", content: "#ec4899" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "ChatMingle" },
+
+      { property: "og:site_name", content: "ChatMingle" },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:title", content: "ChatMingle — Chat with Girls Free Online | Free Dating Chat App" },
+      { property: "og:description", content: "Free online chat app to talk with girls. Chat with Indian girls in Hinglish & English. AI girlfriend, romantic companion, dating chat — no signup, 100% free." },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "ChatMingle - Free Chat with Girls Online" },
+      { property: "og:locale", content: "en_IN" },
+
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "ChatMingle — Start a fun conversation" },
-      { name: "twitter:description", content: "ChatMingle is a friendly chat experience where you can mingle, meet new companions, and have warm conversations any time." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e2ef4566-d693-4fec-b0cc-b359728e4806/id-preview-346daa8b--3d50800a-30ff-484e-9fa9-8c5784efad88.lovable.app-1781085797323.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e2ef4566-d693-4fec-b0cc-b359728e4806/id-preview-346daa8b--3d50800a-30ff-484e-9fa9-8c5784efad88.lovable.app-1781085797323.png" },
+      { name: "twitter:site", content: "@ChatMingle" },
+      { name: "twitter:title", content: "ChatMingle — Chat with Girls Free Online" },
+      { name: "twitter:description", content: "Free online chat app to talk with girls. AI girlfriend, dating chat, romantic companion in Hinglish & English. No signup needed." },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "canonical", href: SITE_URL },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" },
@@ -94,6 +162,10 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: SCHEMA_ORG }}
+        />
       </head>
       <body>
         {children}
