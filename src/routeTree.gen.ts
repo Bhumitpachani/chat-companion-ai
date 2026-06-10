@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StoriesRouteImport } from './routes/stories'
 import { Route as StartRouteImport } from './routes/start'
+import { Route as OmegleAlternativeRouteImport } from './routes/omegle-alternative'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as MeetNewPeopleRouteImport } from './routes/meet-new-people'
 import { Route as FreeDatingAppRouteImport } from './routes/free-dating-app'
@@ -31,6 +32,11 @@ const StoriesRoute = StoriesRouteImport.update({
 const StartRoute = StartRouteImport.update({
   id: '/start',
   path: '/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OmegleAlternativeRoute = OmegleAlternativeRouteImport.update({
+  id: '/omegle-alternative',
+  path: '/omegle-alternative',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsRoute = NewsRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/free-dating-app': typeof FreeDatingAppRoute
   '/meet-new-people': typeof MeetNewPeopleRoute
   '/news': typeof NewsRoute
+  '/omegle-alternative': typeof OmegleAlternativeRoute
   '/start': typeof StartRoute
   '/stories': typeof StoriesRoute
 }
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/free-dating-app': typeof FreeDatingAppRoute
   '/meet-new-people': typeof MeetNewPeopleRoute
   '/news': typeof NewsRoute
+  '/omegle-alternative': typeof OmegleAlternativeRoute
   '/start': typeof StartRoute
   '/stories': typeof StoriesRoute
 }
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/free-dating-app': typeof FreeDatingAppRoute
   '/meet-new-people': typeof MeetNewPeopleRoute
   '/news': typeof NewsRoute
+  '/omegle-alternative': typeof OmegleAlternativeRoute
   '/start': typeof StartRoute
   '/stories': typeof StoriesRoute
 }
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/free-dating-app'
     | '/meet-new-people'
     | '/news'
+    | '/omegle-alternative'
     | '/start'
     | '/stories'
   fileRoutesByTo: FileRoutesByTo
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/free-dating-app'
     | '/meet-new-people'
     | '/news'
+    | '/omegle-alternative'
     | '/start'
     | '/stories'
   id:
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/free-dating-app'
     | '/meet-new-people'
     | '/news'
+    | '/omegle-alternative'
     | '/start'
     | '/stories'
   fileRoutesById: FileRoutesById
@@ -195,6 +207,7 @@ export interface RootRouteChildren {
   FreeDatingAppRoute: typeof FreeDatingAppRoute
   MeetNewPeopleRoute: typeof MeetNewPeopleRoute
   NewsRoute: typeof NewsRoute
+  OmegleAlternativeRoute: typeof OmegleAlternativeRoute
   StartRoute: typeof StartRoute
   StoriesRoute: typeof StoriesRoute
 }
@@ -213,6 +226,13 @@ declare module '@tanstack/react-router' {
       path: '/start'
       fullPath: '/start'
       preLoaderRoute: typeof StartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/omegle-alternative': {
+      id: '/omegle-alternative'
+      path: '/omegle-alternative'
+      fullPath: '/omegle-alternative'
+      preLoaderRoute: typeof OmegleAlternativeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news': {
@@ -307,6 +327,7 @@ const rootRouteChildren: RootRouteChildren = {
   FreeDatingAppRoute: FreeDatingAppRoute,
   MeetNewPeopleRoute: MeetNewPeopleRoute,
   NewsRoute: NewsRoute,
+  OmegleAlternativeRoute: OmegleAlternativeRoute,
   StartRoute: StartRoute,
   StoriesRoute: StoriesRoute,
 }

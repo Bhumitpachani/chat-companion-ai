@@ -116,7 +116,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
       { title: "ChatMingle — Chat with Girls Free Online | Free Dating Chat App" },
       { name: "description", content: "ChatMingle is a free online chat app to talk with girls. Chat with Indian girls in Hinglish & English. Free dating chat, AI girlfriend companion, romantic chat — no signup needed. Start now!" },
-      { name: "keywords", content: "chat with girl free, chat with girls online free, free chat app, dating chat app, chat with Indian girls, online chat with girls, AI girlfriend, virtual girlfriend, romantic chat app, free dating app India, talk to girls online free, girl chat online, flirt chat app, chat companion, Hinglish chat, Indian dating app, meet girls online, chat with random girls, free girl chat, online dating India, chat app India, girlfriend simulator, romantic AI chat" },
+      { name: "keywords", content: "chat with girl free, chat with girls online free, free chat app, dating chat app, chat with Indian girls, online chat with girls, AI girlfriend, virtual girlfriend, romantic chat app, free dating app India, talk to girls online free, girl chat online, flirt chat app, chat companion, Hinglish chat, Indian dating app, meet girls online, chat with random girls, free girl chat, online dating India, chat app India, girlfriend simulator, romantic AI chat, Omegle alternative, Omegle alternative India, sites like Omegle, Omegle replacement, Omegle India, random chat like Omegle" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       { name: "googlebot", content: "index, follow" },
       { name: "author", content: "ChatMingle" },

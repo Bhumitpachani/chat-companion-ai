@@ -111,8 +111,8 @@ export function Footer() {
           <ul className="mt-3 space-y-2 text-sm text-gray-500">
             <li><Link to="/free-dating-app" className="hover:text-gray-900 transition-colors">Free Dating App</Link></li>
             <li><Link to="/dating-in-india" className="hover:text-gray-900 transition-colors">Dating in India</Link></li>
+            <li><Link to="/omegle-alternative" className="hover:text-gray-900 transition-colors">Omegle Alternative</Link></li>
             <li><span className="text-gray-400">50,000+ happy chats</span></li>
-            <li><span className="text-gray-400">Available 24/7</span></li>
           </ul>
         </div>
       </div>
