@@ -1,0 +1,17 @@
+{
+  "name": "ChatMingle — Chat with Girls Free Online",
+  "short_name": "ChatMingle",
+  "description": "Free chat app to talk with girls online. AI girlfriend, dating chat, romantic companion in Hinglish & English. No signup needed.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ec4899",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/logo.png",    "sizes": "512x512", "type": "image/png" }
+  ],
+  "categories": ["social", "entertainment", "dating"],
+  "lang": "en-IN",
+  "dir": "ltr"
+}

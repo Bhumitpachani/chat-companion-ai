@@ -93,22 +93,26 @@ export function Footer() {
             <li><Link to="/" className="hover:text-gray-900 transition-colors">Home</Link></li>
             <li><Link to="/start" className="hover:text-gray-900 transition-colors">Start Chat</Link></li>
             <li><Link to="/about" className="hover:text-gray-900 transition-colors">About</Link></li>
-          </ul>
-        </div>
-        <div>
-          <div className="text-sm font-bold text-gray-800">Resources</div>
-          <ul className="mt-3 space-y-2 text-sm text-gray-500">
             <li><Link to="/blog" className="hover:text-gray-900 transition-colors">Blog</Link></li>
-            <li><Link to="/news" className="hover:text-gray-900 transition-colors">News</Link></li>
             <li><Link to="/stories" className="hover:text-gray-900 transition-colors">Stories</Link></li>
           </ul>
         </div>
         <div>
-          <div className="text-sm font-bold text-gray-800">Community</div>
+          <div className="text-sm font-bold text-gray-800">Free Chat</div>
           <ul className="mt-3 space-y-2 text-sm text-gray-500">
-            <li>50,000+ happy chats</li>
-            <li>Available 24/7</li>
-            <li>Free to use</li>
+            <li><Link to="/free-chat-app" className="hover:text-gray-900 transition-colors">Free Chat App</Link></li>
+            <li><Link to="/chat-online" className="hover:text-gray-900 transition-colors">Chat Online Free</Link></li>
+            <li><Link to="/chat-rooms" className="hover:text-gray-900 transition-colors">Free Chat Rooms</Link></li>
+            <li><Link to="/meet-new-people" className="hover:text-gray-900 transition-colors">Meet New People</Link></li>
+          </ul>
+        </div>
+        <div>
+          <div className="text-sm font-bold text-gray-800">Dating</div>
+          <ul className="mt-3 space-y-2 text-sm text-gray-500">
+            <li><Link to="/free-dating-app" className="hover:text-gray-900 transition-colors">Free Dating App</Link></li>
+            <li><Link to="/dating-in-india" className="hover:text-gray-900 transition-colors">Dating in India</Link></li>
+            <li><span className="text-gray-400">50,000+ happy chats</span></li>
+            <li><span className="text-gray-400">Available 24/7</span></li>
           </ul>
         </div>
       </div>

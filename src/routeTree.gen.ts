@@ -12,6 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as StoriesRouteImport } from './routes/stories'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as MeetNewPeopleRouteImport } from './routes/meet-new-people'
+import { Route as FreeDatingAppRouteImport } from './routes/free-dating-app'
+import { Route as FreeChatAppRouteImport } from './routes/free-chat-app'
+import { Route as DatingInIndiaRouteImport } from './routes/dating-in-india'
+import { Route as ChatRoomsRouteImport } from './routes/chat-rooms'
+import { Route as ChatOnlineRouteImport } from './routes/chat-online'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
@@ -30,6 +36,36 @@ const StartRoute = StartRouteImport.update({
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetNewPeopleRoute = MeetNewPeopleRouteImport.update({
+  id: '/meet-new-people',
+  path: '/meet-new-people',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreeDatingAppRoute = FreeDatingAppRouteImport.update({
+  id: '/free-dating-app',
+  path: '/free-dating-app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreeChatAppRoute = FreeChatAppRouteImport.update({
+  id: '/free-chat-app',
+  path: '/free-chat-app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DatingInIndiaRoute = DatingInIndiaRouteImport.update({
+  id: '/dating-in-india',
+  path: '/dating-in-india',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoomsRoute = ChatRoomsRouteImport.update({
+  id: '/chat-rooms',
+  path: '/chat-rooms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatOnlineRoute = ChatOnlineRouteImport.update({
+  id: '/chat-online',
+  path: '/chat-online',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatRoute = ChatRouteImport.update({
@@ -58,6 +94,12 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
   '/chat': typeof ChatRoute
+  '/chat-online': typeof ChatOnlineRoute
+  '/chat-rooms': typeof ChatRoomsRoute
+  '/dating-in-india': typeof DatingInIndiaRoute
+  '/free-chat-app': typeof FreeChatAppRoute
+  '/free-dating-app': typeof FreeDatingAppRoute
+  '/meet-new-people': typeof MeetNewPeopleRoute
   '/news': typeof NewsRoute
   '/start': typeof StartRoute
   '/stories': typeof StoriesRoute
@@ -67,6 +109,12 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
   '/chat': typeof ChatRoute
+  '/chat-online': typeof ChatOnlineRoute
+  '/chat-rooms': typeof ChatRoomsRoute
+  '/dating-in-india': typeof DatingInIndiaRoute
+  '/free-chat-app': typeof FreeChatAppRoute
+  '/free-dating-app': typeof FreeDatingAppRoute
+  '/meet-new-people': typeof MeetNewPeopleRoute
   '/news': typeof NewsRoute
   '/start': typeof StartRoute
   '/stories': typeof StoriesRoute
@@ -77,6 +125,12 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
   '/chat': typeof ChatRoute
+  '/chat-online': typeof ChatOnlineRoute
+  '/chat-rooms': typeof ChatRoomsRoute
+  '/dating-in-india': typeof DatingInIndiaRoute
+  '/free-chat-app': typeof FreeChatAppRoute
+  '/free-dating-app': typeof FreeDatingAppRoute
+  '/meet-new-people': typeof MeetNewPeopleRoute
   '/news': typeof NewsRoute
   '/start': typeof StartRoute
   '/stories': typeof StoriesRoute
@@ -88,17 +142,42 @@ export interface FileRouteTypes {
     | '/about'
     | '/blog'
     | '/chat'
+    | '/chat-online'
+    | '/chat-rooms'
+    | '/dating-in-india'
+    | '/free-chat-app'
+    | '/free-dating-app'
+    | '/meet-new-people'
     | '/news'
     | '/start'
     | '/stories'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/blog' | '/chat' | '/news' | '/start' | '/stories'
+  to:
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/chat'
+    | '/chat-online'
+    | '/chat-rooms'
+    | '/dating-in-india'
+    | '/free-chat-app'
+    | '/free-dating-app'
+    | '/meet-new-people'
+    | '/news'
+    | '/start'
+    | '/stories'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/blog'
     | '/chat'
+    | '/chat-online'
+    | '/chat-rooms'
+    | '/dating-in-india'
+    | '/free-chat-app'
+    | '/free-dating-app'
+    | '/meet-new-people'
     | '/news'
     | '/start'
     | '/stories'
@@ -109,6 +188,12 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BlogRoute: typeof BlogRoute
   ChatRoute: typeof ChatRoute
+  ChatOnlineRoute: typeof ChatOnlineRoute
+  ChatRoomsRoute: typeof ChatRoomsRoute
+  DatingInIndiaRoute: typeof DatingInIndiaRoute
+  FreeChatAppRoute: typeof FreeChatAppRoute
+  FreeDatingAppRoute: typeof FreeDatingAppRoute
+  MeetNewPeopleRoute: typeof MeetNewPeopleRoute
   NewsRoute: typeof NewsRoute
   StartRoute: typeof StartRoute
   StoriesRoute: typeof StoriesRoute
@@ -135,6 +220,48 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meet-new-people': {
+      id: '/meet-new-people'
+      path: '/meet-new-people'
+      fullPath: '/meet-new-people'
+      preLoaderRoute: typeof MeetNewPeopleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/free-dating-app': {
+      id: '/free-dating-app'
+      path: '/free-dating-app'
+      fullPath: '/free-dating-app'
+      preLoaderRoute: typeof FreeDatingAppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/free-chat-app': {
+      id: '/free-chat-app'
+      path: '/free-chat-app'
+      fullPath: '/free-chat-app'
+      preLoaderRoute: typeof FreeChatAppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dating-in-india': {
+      id: '/dating-in-india'
+      path: '/dating-in-india'
+      fullPath: '/dating-in-india'
+      preLoaderRoute: typeof DatingInIndiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat-rooms': {
+      id: '/chat-rooms'
+      path: '/chat-rooms'
+      fullPath: '/chat-rooms'
+      preLoaderRoute: typeof ChatRoomsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat-online': {
+      id: '/chat-online'
+      path: '/chat-online'
+      fullPath: '/chat-online'
+      preLoaderRoute: typeof ChatOnlineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat': {
@@ -173,6 +300,12 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   BlogRoute: BlogRoute,
   ChatRoute: ChatRoute,
+  ChatOnlineRoute: ChatOnlineRoute,
+  ChatRoomsRoute: ChatRoomsRoute,
+  DatingInIndiaRoute: DatingInIndiaRoute,
+  FreeChatAppRoute: FreeChatAppRoute,
+  FreeDatingAppRoute: FreeDatingAppRoute,
+  MeetNewPeopleRoute: MeetNewPeopleRoute,
   NewsRoute: NewsRoute,
   StartRoute: StartRoute,
   StoriesRoute: StoriesRoute,
