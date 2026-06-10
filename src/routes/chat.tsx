@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { sendChat } from "@/lib/chat.functions";
 import { randomTrait } from "@/lib/companions";
 
@@ -35,6 +35,12 @@ function pickFallback(used: Set<string>): string {
   used.add(choice);
   if (used.size >= FALLBACKS.length) used.clear();
   return choice;
+}
+
+/** Realistic human typing delay: ~40ms per character, capped 1.2s – 4s */
+function typingDelay(text: string): number {
+  const ms = text.length * 40 + Math.random() * 800;
+  return Math.min(Math.max(ms, 1200), 4000);
 }
 
 function ChatPage() {
@@ -83,11 +89,13 @@ function ChatPage() {
     try {
       const history = [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
       const { reply } = await send({ data: { messages: history, companionName: companion, userName } });
-      await new Promise((r) => setTimeout(r, 300));
+      await new Promise((r) => setTimeout(r, typingDelay(reply)));
       setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: reply, time: nowTime() }]);
     } catch (err) {
       console.error(err);
-      setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: pickFallback(fallbackUsed.current), time: nowTime() }]);
+      const fallback = pickFallback(fallbackUsed.current);
+      await new Promise((r) => setTimeout(r, typingDelay(fallback)));
+      setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: fallback, time: nowTime() }]);
     } finally {
       setTyping(false);
       setSending(false);
@@ -100,42 +108,35 @@ function ChatPage() {
   };
 
   return (
-    <div className="flex h-[100dvh] flex-col" style={{ background: "linear-gradient(135deg, #1a0533 0%, #2d0a4e 40%, #1a1a4e 100%)" }}>
+    <div className="flex h-[100dvh] flex-col bg-gray-100">
 
       {/* ── Header ── */}
-      <header className="shrink-0" style={{ background: "rgba(255,255,255,0.07)", borderBottom: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(20px)" }}>
+      <header className="shrink-0 bg-white border-b border-gray-200 shadow-sm">
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3">
-          <button
-            onClick={() => setConfirmEnd(true)}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all"
-            style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)" }}
-            aria-label="Back"
-          >
-            <ArrowLeft className="h-4 w-4 text-white/80" />
-          </button>
 
-          <div className="flex flex-1 min-w-0 items-center gap-3">
-            <div className="relative shrink-0">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full text-base font-bold text-white shadow-lg"
-                style={{ background: "linear-gradient(135deg, #f43f8e, #a855f7)" }}>
-                {companion ? companion[0] : "?"}
-              </div>
-              <span className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-[#1a0533] bg-emerald-400" />
+          {/* Avatar with single green dot */}
+          <div className="relative shrink-0">
+            <div
+              className="flex h-11 w-11 items-center justify-center rounded-full text-base font-bold text-white shadow"
+              style={{ background: "linear-gradient(135deg, #ec4899, #8b5cf6)" }}
+            >
+              {companion ? companion[0] : "?"}
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="truncate text-sm font-bold text-white">{companion}</div>
-              <div className="flex items-center gap-1.5 text-[11px] text-white/50">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                <span>online now</span>
-                {companion && <span className="hidden sm:inline">· {randomTrait(companion)}</span>}
-              </div>
+            <span className="absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 border-white bg-green-500" />
+          </div>
+
+          {/* Name + status (no second dot) */}
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-bold text-gray-900 truncate">{companion}</div>
+            <div className="text-xs text-gray-400">
+              online now{companion ? ` · ${randomTrait(companion)}` : ""}
             </div>
           </div>
 
+          {/* End button only — no back arrow */}
           <button
             onClick={() => setConfirmEnd(true)}
-            className="shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold transition-all"
-            style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)", color: "#fca5a5" }}
+            className="shrink-0 rounded-full border border-red-200 bg-red-50 px-4 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-100 transition-colors"
           >
             End
           </button>
@@ -143,112 +144,109 @@ function ChatPage() {
       </header>
 
       {/* ── Messages ── */}
-      <div
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto"
-        style={{ scrollbarWidth: "none" }}
-      >
+      <div ref={scrollRef} className="flex-1 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
         <style>{`div::-webkit-scrollbar{display:none}`}</style>
-        <div className="mx-auto max-w-3xl px-4 py-6 space-y-1">
+        <div className="mx-auto max-w-3xl px-4 py-6">
 
           {/* Empty state */}
           {messages.length === 0 && companion && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div
-                className="flex h-24 w-24 items-center justify-center rounded-full text-4xl font-extrabold text-white shadow-2xl mb-5"
-                style={{ background: "linear-gradient(135deg, #f43f8e, #a855f7)", boxShadow: "0 0 40px rgba(244,63,142,0.4)" }}
+                className="flex h-24 w-24 items-center justify-center rounded-full text-4xl font-extrabold text-white shadow-xl mb-5"
+                style={{ background: "linear-gradient(135deg, #ec4899, #8b5cf6)" }}
               >
                 {companion[0]}
               </div>
-              <div className="text-xl font-bold text-white">{companion}</div>
-              <div className="mt-1 text-sm text-white/50">{randomTrait(companion)}</div>
-              <div
-                className="mt-5 rounded-2xl px-5 py-3 text-sm text-white/80"
-                style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
-              >
+              <div className="text-xl font-bold text-gray-800">{companion}</div>
+              <div className="mt-1 text-sm text-gray-400">{randomTrait(companion)}</div>
+              <div className="mt-5 rounded-2xl bg-white border border-gray-200 px-5 py-3 text-sm text-gray-500 shadow-sm">
                 👋 Say hi first! {companion} is waiting for you…
               </div>
             </div>
           )}
 
-          {messages.map((m, i) => {
-            const isUser = m.role === "user";
-            const prevSame = i > 0 && messages[i - 1].role === m.role;
-            const nextSame = i < messages.length - 1 && messages[i + 1].role === m.role;
-            return (
-              <div key={m.id} className={`flex items-end gap-2 ${isUser ? "justify-end" : "justify-start"} ${prevSame ? "mt-0.5" : "mt-3"}`}>
+          <div className="space-y-0.5">
+            {messages.map((m, i) => {
+              const isUser = m.role === "user";
+              const prevSame = i > 0 && messages[i - 1].role === m.role;
+              const nextSame = i < messages.length - 1 && messages[i + 1].role === m.role;
+              return (
+                <div
+                  key={m.id}
+                  className={`flex items-end gap-2 ${isUser ? "justify-end" : "justify-start"} ${prevSame ? "mt-0.5" : "mt-4"}`}
+                >
+                  {/* AI avatar — only on last in a group */}
+                  {!isUser && (
+                    <div
+                      className={`shrink-0 flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white ${nextSame ? "invisible" : ""}`}
+                      style={{ background: "linear-gradient(135deg, #ec4899, #8b5cf6)" }}
+                    >
+                      {companion ? companion[0] : "A"}
+                    </div>
+                  )}
 
-                {/* AI avatar — only on last consecutive */}
-                {!isUser && (
-                  <div className={`shrink-0 flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white ${nextSame ? "invisible" : ""}`}
-                    style={{ background: "linear-gradient(135deg, #f43f8e, #a855f7)" }}>
-                    {companion ? companion[0] : "A"}
+                  <div className={`flex max-w-[72%] flex-col ${isUser ? "items-end" : "items-start"}`}>
+                    <div
+                      className="px-4 py-2.5 text-sm leading-relaxed"
+                      style={isUser ? {
+                        background: "linear-gradient(135deg, #6366f1, #ec4899)",
+                        borderRadius: prevSame ? "18px 4px 4px 18px" : nextSame ? "18px 18px 4px 18px" : "18px 4px 18px 18px",
+                        color: "white",
+                      } : {
+                        background: "white",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: prevSame ? "4px 18px 18px 4px" : nextSame ? "18px 18px 18px 4px" : "4px 18px 18px 18px",
+                        color: "#111827",
+                      }}
+                    >
+                      <span className="whitespace-pre-wrap">{m.content}</span>
+                    </div>
+                    {!nextSame && (
+                      <div className="mt-1 px-1 text-[10px] text-gray-400">{m.time}</div>
+                    )}
                   </div>
-                )}
 
-                <div className={`flex max-w-[72%] flex-col ${isUser ? "items-end" : "items-start"}`}>
-                  <div
-                    className="px-4 py-2.5 text-sm leading-relaxed"
-                    style={isUser ? {
-                      background: "linear-gradient(135deg, #6366f1, #ec4899)",
-                      borderRadius: prevSame ? "18px 4px 4px 18px" : nextSame ? "18px 18px 4px 18px" : "18px 4px 18px 18px",
-                      color: "white",
-                      boxShadow: "0 4px 15px rgba(99,102,241,0.3)",
-                    } : {
-                      background: "rgba(255,255,255,0.1)",
-                      backdropFilter: "blur(10px)",
-                      border: "1px solid rgba(255,255,255,0.15)",
-                      borderRadius: prevSame ? "4px 18px 18px 4px" : nextSame ? "18px 18px 18px 4px" : "4px 18px 18px 18px",
-                      color: "rgba(255,255,255,0.92)",
-                    }}
-                  >
-                    <span className="whitespace-pre-wrap">{m.content}</span>
-                  </div>
-                  {/* Timestamp only on last in a group */}
-                  {!nextSame && (
-                    <div className="mt-1 px-1 text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>{m.time}</div>
+                  {/* User avatar — only on last in a group */}
+                  {isUser && (
+                    <div
+                      className={`shrink-0 flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white ${nextSame ? "invisible" : ""}`}
+                      style={{ background: "linear-gradient(135deg, #6366f1, #ec4899)" }}
+                    >
+                      {userName ? userName[0].toUpperCase() : "Y"}
+                    </div>
                   )}
                 </div>
+              );
+            })}
 
-                {/* User avatar — only on last consecutive */}
-                {isUser && (
-                  <div className={`shrink-0 flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white ${nextSame ? "invisible" : ""}`}
-                    style={{ background: "linear-gradient(135deg, #6366f1, #ec4899)" }}>
-                    {userName ? userName[0].toUpperCase() : "Y"}
+            {/* Typing indicator */}
+            {typing && (
+              <div className="flex items-end gap-2 mt-4">
+                <div
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                  style={{ background: "linear-gradient(135deg, #ec4899, #8b5cf6)" }}
+                >
+                  {companion ? companion[0] : "A"}
+                </div>
+                <div className="rounded-[4px_18px_18px_18px] bg-white border border-gray-200 px-5 py-3 shadow-sm">
+                  <div className="flex gap-1.5 items-center h-4">
+                    {[0, 150, 300].map((d) => (
+                      <span
+                        key={d}
+                        className="h-2 w-2 rounded-full bg-pink-400 animate-bounce"
+                        style={{ animationDelay: `${d}ms` }}
+                      />
+                    ))}
                   </div>
-                )}
-              </div>
-            );
-          })}
-
-          {/* Typing indicator */}
-          {typing && (
-            <div className="flex items-end gap-2 mt-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
-                style={{ background: "linear-gradient(135deg, #f43f8e, #a855f7)" }}>
-                {companion ? companion[0] : "A"}
-              </div>
-              <div
-                className="px-5 py-3 rounded-[4px_18px_18px_18px]"
-                style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)" }}
-              >
-                <div className="flex gap-1.5 items-center h-4">
-                  {[0, 150, 300].map((d) => (
-                    <span key={d} className="h-2 w-2 rounded-full animate-bounce"
-                      style={{ background: "rgba(244,63,142,0.8)", animationDelay: `${d}ms` }} />
-                  ))}
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
       {/* ── Composer ── */}
-      <div
-        className="shrink-0 pb-[env(safe-area-inset-bottom)]"
-        style={{ background: "rgba(255,255,255,0.05)", borderTop: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(20px)" }}
-      >
+      <div className="shrink-0 bg-white border-t border-gray-200 pb-[env(safe-area-inset-bottom)]">
         <div className="mx-auto flex max-w-3xl items-end gap-3 px-4 py-3">
           <textarea
             ref={inputRef}
@@ -259,16 +257,8 @@ function ChatPage() {
             maxLength={2000}
             rows={1}
             disabled={sending}
-            className="flex-1 resize-none overflow-hidden text-sm outline-none disabled:opacity-60"
-            style={{
-              background: "rgba(255,255,255,0.08)",
-              border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: "20px",
-              padding: "12px 20px",
-              color: "white",
-              maxHeight: "128px",
-              scrollbarWidth: "none",
-            }}
+            className="flex-1 resize-none overflow-hidden rounded-full border border-gray-300 bg-gray-50 px-5 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 disabled:opacity-60 transition-colors"
+            style={{ maxHeight: "128px", scrollbarWidth: "none" }}
             onInput={(e) => {
               const t = e.currentTarget;
               t.style.height = "auto";
@@ -279,32 +269,30 @@ function ChatPage() {
             type="button"
             onClick={() => void submitMessage()}
             disabled={!input.trim() || sending}
-            className="shrink-0 flex h-11 w-11 items-center justify-center rounded-full transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:hover:scale-100"
-            style={{ background: "linear-gradient(135deg, #6366f1, #ec4899)", boxShadow: "0 4px 15px rgba(236,72,153,0.4)" }}
+            className="shrink-0 flex h-10 w-10 items-center justify-center rounded-full text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:hover:scale-100"
+            style={{ background: "linear-gradient(135deg, #6366f1, #ec4899)" }}
           >
-            <Send className="h-4 w-4 text-white" />
+            <Send className="h-4 w-4" />
           </button>
         </div>
       </div>
 
       {/* ── End chat confirm ── */}
       {confirmEnd && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)" }}>
-          <div className="w-full max-w-sm rounded-3xl p-6" style={{ background: "#1e0940", border: "1px solid rgba(255,255,255,0.15)" }}>
-            <h3 className="text-lg font-extrabold text-white">End this chat?</h3>
-            <p className="mt-2 text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>You will go back home. You can always start a new chat anytime.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-gray-100">
+            <h3 className="text-lg font-extrabold text-gray-900">End this chat?</h3>
+            <p className="mt-2 text-sm text-gray-500">You will go back home. You can always start a new chat anytime.</p>
             <div className="mt-5 flex gap-3">
               <button
                 onClick={() => setConfirmEnd(false)}
-                className="flex-1 rounded-full py-2.5 text-sm font-semibold text-white/70 transition-all hover:text-white"
-                style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)" }}
+                className="flex-1 rounded-full border border-gray-200 bg-gray-50 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors"
               >
                 Keep chatting
               </button>
               <button
                 onClick={endChat}
-                className="flex-1 rounded-full py-2.5 text-sm font-semibold text-white"
-                style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }}
+                className="flex-1 rounded-full bg-red-500 py-2.5 text-sm font-semibold text-white hover:bg-red-600 transition-colors"
               >
                 End chat
               </button>
