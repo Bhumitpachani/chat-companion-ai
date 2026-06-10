@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Send } from "lucide-react";
 import { sendChat } from "@/lib/chat.functions";
 import { randomTrait } from "@/lib/companions";
 
@@ -25,8 +25,8 @@ const FALLBACKS = [
   "Arre yaar, network thoda slow lag raha hai 😅 ek baar phir try karo?",
   "Oops, lagta hai connection thoda hiccup hua. Phir se bhejogi?",
   "Hmm, message reach nahi hua properly 😬 thoda sa wait karke try karo?",
-  "Sorry yaar, ek second ke liye sab freeze ho gaya. Repeat please? 💖",
-  "Arre, kuch toh gadbad hui — ek baar resend karo na?",
+  "Sorry yaar, ek second ke liye sab freeze ho gaya. Repeat please? 🙈",
+  "Arre, kuch toh gadbad hui — ek baar resend karo na? 🤭",
 ];
 
 function pickFallback(used: Set<string>): string {
@@ -48,7 +48,7 @@ function ChatPage() {
   const [typing, setTyping] = useState(false);
   const [confirmEnd, setConfirmEnd] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const fallbackUsed = useRef<Set<string>>(new Set());
 
   useEffect(() => {
@@ -63,12 +63,6 @@ function ChatPage() {
     }
     setUserName(u);
     setCompanion(c);
-    setMessages([{
-      id: "greet",
-      role: "assistant",
-      content: `Hi ${u}! 💖 I'm ${c}, so nice to finally meet you yaar! How are you doing today?`,
-      time: nowTime(),
-    }]);
   }, [navigate]);
 
   useEffect(() => {
@@ -77,8 +71,14 @@ function ChatPage() {
 
   useEffect(() => { inputRef.current?.focus(); }, [companion, sending]);
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      void submitMessage();
+    }
+  };
+
+  const submitMessage = async () => {
     const text = input.trim();
     if (!text || sending) return;
     const userMsg: Msg = { id: crypto.randomUUID(), role: "user", content: text, time: nowTime() };
@@ -112,35 +112,44 @@ function ChatPage() {
   };
 
   return (
-    <div className="flex h-[100dvh] flex-col">
-      {/* Chat header */}
-      <header className="glass border-b border-border/60">
-        <div className="mx-auto grid max-w-3xl grid-cols-[auto_1fr_auto] items-center gap-3 px-3 py-2.5 sm:px-4 sm:py-3">
+    <div className="flex h-[100dvh] flex-col bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+
+      {/* Chat header — glass with gradient accent */}
+      <header className="shrink-0 border-b border-white/40 backdrop-blur-xl bg-white/60 shadow-sm">
+        <div className="mx-auto flex max-w-5xl items-center gap-4 px-4 py-3 sm:px-6">
           <button
             onClick={() => setConfirmEnd(true)}
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-card hover:bg-muted"
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/60 bg-white/80 shadow-sm hover:bg-white transition-all"
             aria-label="Back"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5 text-gray-600" />
           </button>
-          <div className="flex min-w-0 items-center gap-3">
+
+          <div className="flex flex-1 min-w-0 items-center gap-3">
             <div className="relative shrink-0">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-brand text-lg font-bold text-white shadow-brand">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-violet-600 text-lg font-bold text-white shadow-lg">
                 {companion ? companion[0] : "?"}
               </div>
-              <span className="absolute -right-0.5 -bottom-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500" />
+              <span className="absolute -right-0.5 -bottom-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-400 shadow" />
             </div>
-            <div className="min-w-0 leading-tight">
-              <div className="truncate font-bold">{companion}</div>
-              <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                <span className="rounded-full bg-secondary px-1.5 py-0.5 font-semibold text-secondary-foreground">AI companion</span>
-                <span className="truncate">· online</span>
+            <div className="min-w-0">
+              <div className="truncate text-base font-bold text-gray-900">{companion}</div>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <span className="rounded-full bg-pink-100 px-2 py-0.5 text-[10px] font-semibold text-pink-600">AI companion</span>
+                <span>· online</span>
               </div>
             </div>
           </div>
+
+          {companion && (
+            <div className="hidden sm:block text-xs text-gray-400 italic">
+              {randomTrait(companion)}
+            </div>
+          )}
+
           <button
             onClick={() => setConfirmEnd(true)}
-            className="rounded-full border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-semibold text-destructive hover:bg-destructive/20 sm:px-4 sm:text-sm"
+            className="shrink-0 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-xs font-semibold text-red-500 hover:bg-red-100 transition-all"
           >
             End
           </button>
@@ -149,35 +158,63 @@ function ChatPage() {
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-3xl px-3 py-5 sm:px-4 sm:py-6">
-          {companion && (
-            <div className="mx-auto mb-5 max-w-md rounded-2xl glass p-4 text-center text-sm shadow-soft">
-              <div className="font-semibold">You are now chatting with {companion}</div>
-              <div className="mt-1 text-xs text-muted-foreground">{randomTrait(companion)} · Be kind and have fun 💖</div>
+        <div className="mx-auto max-w-5xl px-4 py-6 sm:px-8">
+
+          {/* Empty state — shown when no messages yet */}
+          {messages.length === 0 && companion && (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-violet-600 text-3xl font-bold text-white shadow-xl mb-4">
+                {companion[0]}
+              </div>
+              <div className="text-lg font-bold text-gray-800">{companion}</div>
+              <div className="mt-1 text-sm text-gray-500">{randomTrait(companion)}</div>
+              <div className="mt-4 rounded-2xl bg-white/70 backdrop-blur px-5 py-3 text-sm text-gray-600 shadow-sm border border-white/60">
+                Say hi first! 👋 {companion} is waiting for you.
+              </div>
             </div>
           )}
-          <div className="space-y-3">
+
+          <div className="space-y-4">
             {messages.map((m) => (
-              <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`group flex max-w-[85%] flex-col sm:max-w-[78%] ${m.role === "user" ? "items-end" : "items-start"}`}>
+              <div key={m.id} className={`flex items-end gap-3 ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+
+                {/* AI avatar */}
+                {m.role === "assistant" && (
+                  <div className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-violet-600 text-xs font-bold text-white shadow mb-5">
+                    {companion ? companion[0] : "A"}
+                  </div>
+                )}
+
+                <div className={`flex max-w-[70%] flex-col sm:max-w-[60%] ${m.role === "user" ? "items-end" : "items-start"}`}>
                   <div className={
                     m.role === "user"
-                      ? "rounded-2xl rounded-br-md bg-gradient-brand px-4 py-2.5 text-white shadow-soft"
-                      : "rounded-2xl rounded-bl-md border border-border/60 bg-card px-4 py-2.5 text-foreground shadow-soft"
+                      ? "rounded-3xl rounded-br-md bg-gradient-to-br from-blue-500 to-pink-500 px-5 py-3 text-white shadow-md"
+                      : "rounded-3xl rounded-bl-md bg-white/80 backdrop-blur px-5 py-3 text-gray-800 shadow-md border border-white/60"
                   }>
                     <div className="whitespace-pre-wrap text-sm leading-relaxed">{m.content}</div>
                   </div>
-                  <div className="mt-1 px-2 text-[10px] text-muted-foreground">{m.time}</div>
+                  <div className="mt-1.5 px-2 text-[10px] text-gray-400">{m.time}</div>
                 </div>
+
+                {/* User avatar */}
+                {m.role === "user" && (
+                  <div className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-pink-500 text-xs font-bold text-white shadow mb-5">
+                    {userName ? userName[0].toUpperCase() : "Y"}
+                  </div>
+                )}
               </div>
             ))}
+
             {typing && (
-              <div className="flex justify-start">
-                <div className="rounded-2xl rounded-bl-md border border-border/60 bg-card px-4 py-3 shadow-soft">
-                  <div className="flex gap-1">
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/60" style={{ animationDelay: "0ms" }} />
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/60" style={{ animationDelay: "150ms" }} />
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/60" style={{ animationDelay: "300ms" }} />
+              <div className="flex items-end gap-3 justify-start">
+                <div className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-violet-600 text-xs font-bold text-white shadow">
+                  {companion ? companion[0] : "A"}
+                </div>
+                <div className="rounded-3xl rounded-bl-md bg-white/80 backdrop-blur px-5 py-3 shadow-md border border-white/60">
+                  <div className="flex gap-1.5 items-center h-4">
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-pink-400" style={{ animationDelay: "0ms" }} />
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-pink-400" style={{ animationDelay: "150ms" }} />
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-pink-400" style={{ animationDelay: "300ms" }} />
                   </div>
                 </div>
               </div>
@@ -187,43 +224,52 @@ function ChatPage() {
       </div>
 
       {/* Composer */}
-      <div className="border-t border-border/60 glass pb-[env(safe-area-inset-bottom)]">
-        <form onSubmit={handleSend} className="mx-auto flex max-w-3xl gap-2 px-3 py-3 sm:px-4">
-          <input
+      <div className="shrink-0 border-t border-white/40 backdrop-blur-xl bg-white/60 pb-[env(safe-area-inset-bottom)]">
+        <div className="mx-auto flex max-w-5xl items-end gap-3 px-4 py-3 sm:px-8 sm:py-4">
+          <textarea
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={`Message ${companion || ""}…`}
+            onKeyDown={handleKeyDown}
+            placeholder={`Message ${companion || ""}… (Enter to send)`}
             maxLength={2000}
+            rows={1}
             disabled={sending}
-            className="flex-1 rounded-full border border-border bg-card px-5 py-3 text-sm outline-none ring-ring focus:ring-2 disabled:opacity-60"
+            className="flex-1 resize-none overflow-hidden rounded-2xl border border-white/60 bg-white/80 backdrop-blur px-5 py-3 text-sm shadow-sm outline-none ring-pink-300 focus:ring-2 disabled:opacity-60 max-h-32"
+            style={{ height: "auto" }}
+            onInput={(e) => {
+              const t = e.currentTarget;
+              t.style.height = "auto";
+              t.style.height = Math.min(t.scrollHeight, 128) + "px";
+            }}
           />
           <button
-            type="submit"
+            type="button"
+            onClick={() => void submitMessage()}
             disabled={!input.trim() || sending}
-            className="shrink-0 rounded-full bg-gradient-brand px-5 py-3 text-sm font-bold text-white shadow-brand transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 sm:px-6"
+            className="shrink-0 flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-pink-500 text-white shadow-lg transition-all hover:scale-105 active:scale-95 disabled:opacity-40 disabled:hover:scale-100"
           >
-            Send
+            <Send className="h-5 w-5" />
           </button>
-        </form>
+        </div>
       </div>
 
       {/* End-chat confirm */}
       {confirmEnd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-3xl bg-card p-6 shadow-brand">
-            <h3 className="text-xl font-extrabold">End this chat?</h3>
-            <p className="mt-2 text-sm text-muted-foreground">You will be returned to the home page. You can always start a new chat with someone else.</p>
-            <div className="mt-6 flex gap-2">
+          <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl">
+            <h3 className="text-xl font-extrabold text-gray-900">End this chat?</h3>
+            <p className="mt-2 text-sm text-gray-500">You will be returned to the home page. You can always start a new chat with someone else.</p>
+            <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setConfirmEnd(false)}
-                className="flex-1 rounded-full border border-border bg-card px-4 py-2.5 text-sm font-semibold hover:bg-muted"
+                className="flex-1 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-100"
               >
                 Keep chatting
               </button>
               <button
                 onClick={endChat}
-                className="flex-1 rounded-full bg-destructive px-4 py-2.5 text-sm font-semibold text-destructive-foreground hover:opacity-90"
+                className="flex-1 rounded-full bg-red-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-600"
               >
                 End chat
               </button>
