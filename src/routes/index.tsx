@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
       { name: "keywords", content: "chat with girl free, chat with girls online free, free chat app, dating chat app, chat with Indian girls, AI girlfriend, virtual girlfriend, romantic chat, free dating app India, talk to girls online, girl chat, flirt chat, chat companion India, Hinglish chat app" },
       { property: "og:title", content: "ChatMingle — Chat with Girls Free Online | Free Dating Chat App" },
       { property: "og:description", content: "Chat with girls free online. AI girlfriend, dating chat, romantic companion in Hinglish & English. No signup needed, 100% free." },
-      { property: "og:url", content: "https://www.chatmingle.app/" },
+      { property: "og:url", content: "https://www.chatmingle.online/" },
       { name: "twitter:title", content: "ChatMingle — Chat with Girls Free Online" },
       { name: "twitter:description", content: "Chat with girls free. AI girlfriend, dating chat in Hinglish. No signup, 100% free." },
     ],

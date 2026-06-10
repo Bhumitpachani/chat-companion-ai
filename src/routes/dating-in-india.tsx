@@ -10,11 +10,11 @@ export const Route = createFileRoute("/dating-in-india")({
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Dating in India Free — Chat with Indian Girls | ChatMingle" },
       { property: "og:description", content: "Free dating in India. Chat with Indian girls in Hinglish & English. No signup, no payment." },
-      { property: "og:url", content: "https://www.chatmingle.app/dating-in-india" },
+      { property: "og:url", content: "https://www.chatmingle.online/dating-in-india" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://www.chatmingle.app/dating-in-india" }],
+    links: [{ rel: "canonical", href: "https://www.chatmingle.online/dating-in-india" }],
   }),
   component: DatingInIndiaPage,
 });
@@ -23,8 +23,8 @@ const BREADCRUMB_SCHEMA = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.app/" },
-    { "@type": "ListItem", "position": 2, "name": "Dating in India", "item": "https://www.chatmingle.app/dating-in-india" },
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.online/" },
+    { "@type": "ListItem", "position": 2, "name": "Dating in India", "item": "https://www.chatmingle.online/dating-in-india" },
   ],
 });
 

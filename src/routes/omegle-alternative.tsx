@@ -10,13 +10,13 @@ export const Route = createFileRoute("/omegle-alternative")({
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
       { property: "og:title", content: "Omegle Alternative India — Chat with Girls Free | ChatMingle" },
       { property: "og:description", content: "The best Omegle alternative for Indians. Chat with girls free, in Hinglish, no signup. Safer and smarter than Omegle." },
-      { property: "og:url", content: "https://www.chatmingle.app/omegle-alternative" },
+      { property: "og:url", content: "https://www.chatmingle.online/omegle-alternative" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Omegle Alternative India — ChatMingle" },
       { name: "twitter:description", content: "Best Omegle alternative for Indians. Chat with girls free, Hinglish, no signup." },
     ],
-    links: [{ rel: "canonical", href: "https://www.chatmingle.app/omegle-alternative" }],
+    links: [{ rel: "canonical", href: "https://www.chatmingle.online/omegle-alternative" }],
   }),
   component: OmegleAlternativePage,
 });
@@ -25,8 +25,8 @@ const BREADCRUMB_SCHEMA = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.app/" },
-    { "@type": "ListItem", "position": 2, "name": "Omegle Alternative", "item": "https://www.chatmingle.app/omegle-alternative" },
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.online/" },
+    { "@type": "ListItem", "position": 2, "name": "Omegle Alternative", "item": "https://www.chatmingle.online/omegle-alternative" },
   ],
 });
 
@@ -211,7 +211,7 @@ function OmegleAlternativePage() {
             <h2 className="text-2xl font-bold text-gray-900">How to Use ChatMingle as Your Omegle Alternative</h2>
             <div className="mt-5 grid gap-4 sm:grid-cols-3">
               {[
-                { n: "01", t: "Open ChatMingle", d: "No app, no download. Just open chatmingle.app on any device." },
+                { n: "01", t: "Open ChatMingle", d: "No app, no download. Just open chatmingle.online on any device." },
                 { n: "02", t: "Enter your name", d: "Type any first name — no email, no phone number needed." },
                 { n: "03", t: "Start chatting", d: "Matched in 5 seconds with a friendly girl companion. Start talking!" },
               ].map((s) => (

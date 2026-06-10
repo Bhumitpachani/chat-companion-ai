@@ -10,11 +10,11 @@ export const Route = createFileRoute("/meet-new-people")({
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Meet New People Online Free — ChatMingle" },
       { property: "og:description", content: "Meet new people online for free. Chat with girls, make connections. No signup — start now!" },
-      { property: "og:url", content: "https://www.chatmingle.app/meet-new-people" },
+      { property: "og:url", content: "https://www.chatmingle.online/meet-new-people" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://www.chatmingle.app/meet-new-people" }],
+    links: [{ rel: "canonical", href: "https://www.chatmingle.online/meet-new-people" }],
   }),
   component: MeetNewPeoplePage,
 });
@@ -23,8 +23,8 @@ const BREADCRUMB_SCHEMA = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.app/" },
-    { "@type": "ListItem", "position": 2, "name": "Meet New People", "item": "https://www.chatmingle.app/meet-new-people" },
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.online/" },
+    { "@type": "ListItem", "position": 2, "name": "Meet New People", "item": "https://www.chatmingle.online/meet-new-people" },
   ],
 });
 

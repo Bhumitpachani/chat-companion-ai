@@ -9,7 +9,7 @@ export const Route = createFileRoute("/blog")({
       { name: "keywords", content: "how to chat with girls online, chat tips India, Hinglish conversation tips, free chat app tips, dating chat tips, talk to girls online guide" },
       { property: "og:title", content: "ChatMingle Blog — Chat with Girls Tips & Stories" },
       { property: "og:description", content: "Tips on chatting with girls free online. Hinglish phrases, conversation starters, dating chat guides." },
-      { property: "og:url", content: "https://www.chatmingle.app/blog" },
+      { property: "og:url", content: "https://www.chatmingle.online/blog" },
     ],
   }),
   component: BlogPage,

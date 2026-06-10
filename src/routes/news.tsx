@@ -9,7 +9,7 @@ export const Route = createFileRoute("/news")({
       { name: "keywords", content: "ChatMingle news, free chat app updates, chat with girls app news, AI girlfriend app updates, dating chat India news" },
       { property: "og:title", content: "ChatMingle News — Free Chat App Updates" },
       { property: "og:description", content: "Latest news from ChatMingle — India's free chat with girls app." },
-      { property: "og:url", content: "https://www.chatmingle.app/news" },
+      { property: "og:url", content: "https://www.chatmingle.online/news" },
     ],
   }),
   component: NewsPage,

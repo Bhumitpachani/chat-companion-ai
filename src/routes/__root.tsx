@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
-const SITE_URL = "https://www.chatmingle.app";
+const SITE_URL = "https://www.chatmingle.online";
 const OG_IMAGE = `${SITE_URL}/logo.png`;
 
 const SCHEMA_ORG = JSON.stringify({

@@ -10,14 +10,14 @@ export const Route = createFileRoute("/free-chat-app")({
       { name: "robots", content: "index, follow" },
       { property: "og:title", content: "Free Chat App — Chat with Girls Online Free | ChatMingle" },
       { property: "og:description", content: "ChatMingle is the best free chat app to talk with girls online. No signup, instant match, 100% free." },
-      { property: "og:url", content: "https://www.chatmingle.app/free-chat-app" },
+      { property: "og:url", content: "https://www.chatmingle.online/free-chat-app" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Free Chat App — ChatMingle" },
       { name: "twitter:description", content: "Best free chat app to talk with girls. No signup needed." },
     ],
     links: [
-      { rel: "canonical", href: "https://www.chatmingle.app/free-chat-app" },
+      { rel: "canonical", href: "https://www.chatmingle.online/free-chat-app" },
     ],
   }),
   component: FreeChatAppPage,
@@ -27,8 +27,8 @@ const BREADCRUMB_SCHEMA = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.app/" },
-    { "@type": "ListItem", "position": 2, "name": "Free Chat App", "item": "https://www.chatmingle.app/free-chat-app" },
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.chatmingle.online/" },
+    { "@type": "ListItem", "position": 2, "name": "Free Chat App", "item": "https://www.chatmingle.online/free-chat-app" },
   ],
 });
 

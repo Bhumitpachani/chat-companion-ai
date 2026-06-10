@@ -13,4 +13,4 @@ Allow: /
 Disallow: /chat
 Disallow: /api/
 
-Sitemap: https://www.chatmingle.app/sitemap.xml
+Sitemap: https://www.chatmingle.online/sitemap.xml
