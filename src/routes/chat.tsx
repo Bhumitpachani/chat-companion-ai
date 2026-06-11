@@ -50,19 +50,11 @@ function ChatPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [seen, setSeen] = useState(false);
   const [confirmEnd, setConfirmEnd] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fallbackUsed = useRef<Set<string>>(new Set());
-
-  // Refs for human-like timing
-  const openerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const openerTypingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const openerCancelledRef = useRef(false);
-  const noReplyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const nudgeAbortRef = useRef(false);
-  // Always holds the latest messages so timer callbacks don't get stale closure
-  const messagesRef = useRef<Msg[]>([]);
 
   useEffect(() => {
     let u = "", c = "";
@@ -74,110 +66,6 @@ function ChatPage() {
     setUserName(u);
     setCompanion(c);
   }, [navigate]);
-
-  // Keep messagesRef current so timer callbacks always read the latest messages
-  useEffect(() => { messagesRef.current = messages; }, [messages]);
-
-  // ── Human-like timing helpers ────────────────────────────────────────────
-
-  // Stop any pending no-reply timer and mark any in-progress nudge as aborted
-  function clearNoReplyTimer() {
-    if (noReplyTimerRef.current) { clearTimeout(noReplyTimerRef.current); noReplyTimerRef.current = null; }
-    nudgeAbortRef.current = true;
-  }
-
-  // Sends an AI-generated follow-up after silence — no fake user message, uses systemNote
-  async function sendNudge() {
-    nudgeAbortRef.current = false;
-    setTyping(true);
-    try {
-      // Pass real conversation history as-is (no fake "k" or any trigger message)
-      // systemNote tells the AI what to do without polluting the conversation
-      const nudgeHistory = messagesRef.current.map(m => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
-      }));
-      const { reply } = await send({
-        data: {
-          messages: nudgeHistory,
-          companionName: companion,
-          userName,
-          systemNote: "You sent a message but the user hasn't replied yet. Send ONE very brief, casual follow-up in your own voice — like a real person checking in. Max 5 words. Stay completely in character.",
-        },
-      });
-      if (nudgeAbortRef.current) { setTyping(false); return; }
-      // Short typing delay (capped at 1.5 s since nudges are brief)
-      await new Promise(r => setTimeout(r, Math.min(typingDelay(reply), 1500)));
-      if (nudgeAbortRef.current) { setTyping(false); return; }
-      setTyping(false);
-      setMessages(m => [...m, { id: crypto.randomUUID(), role: "assistant", content: reply, time: nowTime() }]);
-    } catch {
-      // Silent fail — don't show an error banner for a background nudge
-      if (!nudgeAbortRef.current) setTyping(false);
-    }
-  }
-
-  // Start a 10–12 s countdown; fires sendNudge if user stays silent
-  function startNoReplyTimer() {
-    clearNoReplyTimer();
-    nudgeAbortRef.current = false;
-    const delay = 10000 + Math.random() * 2000; // 10–12 s
-    noReplyTimerRef.current = setTimeout(() => { void sendNudge(); }, delay);
-  }
-
-  // Clean up all timers on unmount
-  useEffect(() => {
-    return () => {
-      clearNoReplyTimer();
-      if (openerTimerRef.current) clearTimeout(openerTimerRef.current);
-      if (openerTypingTimerRef.current) clearTimeout(openerTypingTimerRef.current);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // AI-generated opener — unique every conversation, never from a fixed list
-  async function sendOpener() {
-    if (openerCancelledRef.current) { setTyping(false); return; }
-    try {
-      const { reply } = await send({
-        data: {
-          messages: [{ role: "user", content: "hi" }],
-          companionName: companion,
-          userName,
-        },
-      });
-      if (openerCancelledRef.current) { setTyping(false); return; }
-      setTyping(false);
-      setMessages([{ id: crypto.randomUUID(), role: "assistant", content: reply, time: nowTime() }]);
-      startNoReplyTimer();
-    } catch {
-      if (!openerCancelledRef.current) {
-        setTyping(false);
-        setMessages([{ id: crypto.randomUUID(), role: "assistant", content: "heyy", time: nowTime() }]);
-        startNoReplyTimer();
-      }
-    }
-  }
-
-  // ── Companion sends first message — waits ~3 s before opening ────────────
-  useEffect(() => {
-    if (!companion) return;
-    openerCancelledRef.current = false;
-
-    // Show typing indicator after a natural pause (~0.8–1.4 s)
-    openerTypingTimerRef.current = setTimeout(() => {
-      if (!openerCancelledRef.current) setTyping(true);
-    }, 800 + Math.random() * 600);
-
-    // Call AI for the opener ~3 s after entering the room
-    openerTimerRef.current = setTimeout(() => { void sendOpener(); }, 2800 + Math.random() * 700);
-
-    return () => {
-      clearTimeout(openerTypingTimerRef.current!);
-      clearTimeout(openerTimerRef.current!);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [companion]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -193,19 +81,10 @@ function ChatPage() {
     const text = input.trim();
     if (!text || sending) return;
 
-    // If the opener hasn't fired yet, cancel it (user went first)
-    openerCancelledRef.current = true;
-    if (openerTimerRef.current) { clearTimeout(openerTimerRef.current); openerTimerRef.current = null; }
-    if (openerTypingTimerRef.current) { clearTimeout(openerTypingTimerRef.current); openerTypingTimerRef.current = null; }
-
-    // Cancel any pending no-reply nudge (user is now typing)
-    clearNoReplyTimer();
-
     const userMsg: Msg = { id: crypto.randomUUID(), role: "user", content: text, time: nowTime() };
     setMessages((m) => [...m, userMsg]);
     setInput("");
     setSending(true);
-    // Don't show typing immediately — simulate a natural "read receipt" pause
 
     try {
       const history = [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
@@ -213,23 +92,27 @@ function ChatPage() {
       // Fire the API call right away so there's no added latency
       const apiPromise = send({ data: { messages: history, companionName: companion, userName } });
 
-      // After 1–2 s she "reads" the message, then typing indicator appears
-      await new Promise((r) => setTimeout(r, 1000 + Math.random() * 1000));
+      // After ~500ms she "sees" the message — show Seen indicator
+      await new Promise((r) => setTimeout(r, 400 + Math.random() * 300));
+      setSeen(true);
+
+      // After another 0.8–1.4s she starts typing — hide Seen, show typing
+      await new Promise((r) => setTimeout(r, 800 + Math.random() * 600));
+      setSeen(false);
       setTyping(true);
 
       const { reply } = await apiPromise;
       await new Promise((r) => setTimeout(r, typingDelay(reply)));
       setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: reply, time: nowTime() }]);
-      startNoReplyTimer();
     } catch (err) {
       console.error(err);
-      // If API fails before the typing delay fired, make sure indicator shows briefly
+      setSeen(false);
       setTyping(true);
       const fallback = pickFallback(fallbackUsed.current);
       await new Promise((r) => setTimeout(r, typingDelay(fallback)));
       setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: fallback, time: nowTime() }]);
-      startNoReplyTimer();
     } finally {
+      setSeen(false);
       setTyping(false);
       setSending(false);
     }
@@ -312,7 +195,13 @@ function ChatPage() {
                       <span className="whitespace-pre-wrap">{m.content}</span>
                     </div>
                     {!nextSame && (
-                      <div className="mt-1 px-1 text-[10px] text-gray-400">{m.time}</div>
+                      <div className="mt-1 px-1 text-[10px] text-gray-400">
+                        {isUser && seen && i === messages.length - 1 ? (
+                          <span className="text-blue-400">Seen</span>
+                        ) : (
+                          m.time
+                        )}
+                      </div>
                     )}
                   </div>
                   {isUser && (
