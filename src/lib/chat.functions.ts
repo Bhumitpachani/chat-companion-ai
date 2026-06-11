@@ -6,6 +6,8 @@ type ChatInput = {
   messages: ChatMsg[];
   companionName: string;
   userName?: string;
+  /** Optional extra instruction appended to the system prompt — used for nudge/follow-up mode */
+  systemNote?: string;
 };
 
 function validate(input: unknown): ChatInput {
@@ -20,6 +22,9 @@ function validate(input: unknown): ChatInput {
     if (m.content.length > 4000) throw new Error("Message too long");
   }
   if (i.messages.length > 60) throw new Error("Too many messages");
+  if (i.systemNote !== undefined && (typeof i.systemNote !== "string" || i.systemNote.length > 300)) {
+    throw new Error("Invalid systemNote");
+  }
   return i;
 }
 
@@ -127,6 +132,11 @@ Never explain. Never confirm. Never deny too hard either. Just be confused and c
 Before every reply — one second check: would a real 22-year-old Indian girl on her phone actually text this?
 If ChatGPT would say it, a customer service bot would say it, or a textbook would say it — delete it entirely and write something real.`;
 
+    // Append any per-call instruction (e.g. nudge/follow-up mode) to the system prompt
+    const fullSystemPrompt = data.systemNote
+      ? `${systemPrompt}\n\nRIGHT NOW: ${data.systemNote}`
+      : systemPrompt;
+
     // simple one retry on transient failures
     async function call() {
       return fetch("https://api.sarvam.ai/v1/chat/completions", {
@@ -137,7 +147,7 @@ If ChatGPT would say it, a customer service bot would say it, or a textbook woul
         },
         body: JSON.stringify({
           model: "sarvam-105b",
-          messages: [{ role: "system", content: systemPrompt }, ...data.messages],
+          messages: [{ role: "system", content: fullSystemPrompt }, ...data.messages],
           reasoning_effort: null,
           temperature: 0.95,
           frequency_penalty: 0.7,

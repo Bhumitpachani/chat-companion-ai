@@ -6,7 +6,7 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "ChatMingle — Chat with Girls Free Online | AI Girlfriend & Dating Chat App" },
       { name: "description", content: "Chat with girls free online on ChatMingle. Talk to Indian girls in Hinglish & English, get an AI girlfriend experience, free dating chat — no signup, 100% free. Start chatting now!" },
-      { name: "keywords", content: "chat with girl free, chat with girls online free, free chat app, dating chat app, chat with Indian girls, AI girlfriend, virtual girlfriend, romantic chat, free dating app India, talk to girls online, girl chat, flirt chat, chat companion India, Hinglish chat app" },
+      { name: "keywords", content: "chat with girl free, chat with girls online free, free chat app, dating chat app, chat with Indian girls, AI girlfriend india, virtual girlfriend free, romantic chat, free dating app India, tinder alternative india, free tinder alternative, tinder alternative no subscription, talk to girls online, girl chat free india, flirt chat, chat companion India, Hinglish chat app, ai girlfriend free india, virtual girlfriend india" },
       { property: "og:title", content: "ChatMingle — Chat with Girls Free Online | Free Dating Chat App" },
       { property: "og:description", content: "Chat with girls free online. AI girlfriend, dating chat, romantic companion in Hinglish & English. No signup needed, 100% free." },
       { property: "og:url", content: "https://www.chatmingle.online/" },
@@ -348,6 +348,31 @@ function HomePage() {
               <Link to="/omegle-alternative" className="shrink-0 rounded-full bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow hover:bg-blue-700 transition-colors">
                 See Omegle Alternative →
               </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SEO internal links hub — helps Google discover all pages ── */}
+        <section className="border-t border-gray-100 py-10">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-gray-400">Explore ChatMingle</h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {[
+                { to: "/tinder-alternative", label: "Tinder Alternative India", desc: "Free, no subscription, instant" },
+                { to: "/ai-girlfriend", label: "AI Girlfriend India Free", desc: "Virtual companion, Hinglish, 24/7" },
+                { to: "/chat-with-girls", label: "Chat with Girls Free", desc: "Indian girls, no signup needed" },
+                { to: "/free-dating-app", label: "Free Dating App India", desc: "No payment, romantic chat" },
+                { to: "/omegle-alternative", label: "Omegle Alternative India", desc: "Omegle shut down? We're here" },
+                { to: "/dating-in-india", label: "Dating in India Online", desc: "Desi chat, Indian companions" },
+                { to: "/chat-online", label: "Chat Online Free India", desc: "Instant chat, Hinglish" },
+                { to: "/meet-new-people", label: "Meet New People Online", desc: "No profile photo needed" },
+              ].map((link) => (
+                <Link key={link.to} to={link.to as Parameters<typeof Link>[0]["to"]}
+                  className="group rounded-xl border border-gray-100 bg-white p-4 shadow-sm hover:border-pink-200 hover:shadow-md transition-all">
+                  <div className="text-sm font-bold text-gray-800 group-hover:text-pink-600 transition-colors">{link.label}</div>
+                  <div className="mt-0.5 text-xs text-gray-400">{link.desc}</div>
+                </Link>
+              ))}
             </div>
           </div>
         </section>

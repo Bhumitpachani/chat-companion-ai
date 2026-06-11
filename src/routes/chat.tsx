@@ -86,18 +86,25 @@ function ChatPage() {
     nudgeAbortRef.current = true;
   }
 
-  // Sends an AI-generated follow-up after silence — never static, always unique
+  // Sends an AI-generated follow-up after silence — no fake user message, uses systemNote
   async function sendNudge() {
     nudgeAbortRef.current = false;
     setTyping(true);
     try {
-      // Pass real conversation + a hidden meta-instruction so the AI generates
-      // a natural short follow-up entirely in character (not from a fixed list)
-      const nudgeHistory = [
-        ...messagesRef.current.map(m => ({ role: m.role as "user" | "assistant", content: m.content })),
-        { role: "user" as const, content: "k" },
-      ];
-      const { reply } = await send({ data: { messages: nudgeHistory, companionName: companion, userName } });
+      // Pass real conversation history as-is (no fake "k" or any trigger message)
+      // systemNote tells the AI what to do without polluting the conversation
+      const nudgeHistory = messagesRef.current.map(m => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      }));
+      const { reply } = await send({
+        data: {
+          messages: nudgeHistory,
+          companionName: companion,
+          userName,
+          systemNote: "You sent a message but the user hasn't replied yet. Send ONE very brief, casual follow-up in your own voice — like a real person checking in. Max 5 words. Stay completely in character.",
+        },
+      });
       if (nudgeAbortRef.current) { setTyping(false); return; }
       // Short typing delay (capped at 1.5 s since nudges are brief)
       await new Promise(r => setTimeout(r, Math.min(typingDelay(reply), 1500)));
@@ -198,15 +205,26 @@ function ChatPage() {
     setMessages((m) => [...m, userMsg]);
     setInput("");
     setSending(true);
-    setTyping(true);
+    // Don't show typing immediately — simulate a natural "read receipt" pause
+
     try {
       const history = [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
-      const { reply } = await send({ data: { messages: history, companionName: companion, userName } });
+
+      // Fire the API call right away so there's no added latency
+      const apiPromise = send({ data: { messages: history, companionName: companion, userName } });
+
+      // After 1–2 s she "reads" the message, then typing indicator appears
+      await new Promise((r) => setTimeout(r, 1000 + Math.random() * 1000));
+      setTyping(true);
+
+      const { reply } = await apiPromise;
       await new Promise((r) => setTimeout(r, typingDelay(reply)));
       setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: reply, time: nowTime() }]);
-      startNoReplyTimer(); // Watch for user reply after AI responds
+      startNoReplyTimer();
     } catch (err) {
       console.error(err);
+      // If API fails before the typing delay fired, make sure indicator shows briefly
+      setTyping(true);
       const fallback = pickFallback(fallbackUsed.current);
       await new Promise((r) => setTimeout(r, typingDelay(fallback)));
       setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: fallback, time: nowTime() }]);
