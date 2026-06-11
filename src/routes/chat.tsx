@@ -95,10 +95,7 @@ function ChatPage() {
       // a natural short follow-up entirely in character (not from a fixed list)
       const nudgeHistory = [
         ...messagesRef.current.map(m => ({ role: m.role as "user" | "assistant", content: m.content })),
-        {
-          role: "user" as const,
-          content: "[You sent a message and they haven't replied. Send ONE very short, casual follow-up exactly like a real person would when ignored — stay 100% in character. Max 6 words.]",
-        },
+        { role: "user" as const, content: "k" },
       ];
       const { reply } = await send({ data: { messages: nudgeHistory, companionName: companion, userName } });
       if (nudgeAbortRef.current) { setTyping(false); return; }
@@ -137,10 +134,7 @@ function ChatPage() {
     try {
       const { reply } = await send({
         data: {
-          messages: [{
-            role: "user",
-            content: "[You just matched with someone new on a chat app. Send your very first opening message — short, casual, completely in your own natural style. Just a simple greeting to start.]",
-          }],
+          messages: [{ role: "user", content: "hi" }],
           companionName: companion,
           userName,
         },
