@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(sort:*)"
+      "Bash(sort:*)",
+      "Bash(grep -E \"^@types$|react\")"
     ]
   }
 }

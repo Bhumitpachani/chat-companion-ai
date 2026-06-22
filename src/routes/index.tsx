@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Header, Footer } from "@/components/Header";
 
 export const Route = createFileRoute("/")({
@@ -66,6 +67,22 @@ const FAQ_SCHEMA = JSON.stringify({
 
 function HomePage() {
   const navigate = useNavigate();
+  const [activeChat, setActiveChat] = useState<{ companion: string; preview: string } | null>(null);
+
+  useEffect(() => {
+    try {
+      const c = localStorage.getItem("cm_companion");
+      if (!c) return;
+      const raw = localStorage.getItem(`cm_msgs_${c}`);
+      if (!raw) return;
+      const msgs = JSON.parse(raw) as { role: string; content: string }[];
+      if (msgs.length === 0) return;
+      const last = msgs[msgs.length - 1];
+      const preview = (last.role === "assistant" ? last.content : "You: " + last.content).slice(0, 55);
+      setActiveChat({ companion: c, preview });
+    } catch {}
+  }, []);
+
   return (
     <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: FAQ_SCHEMA }} />
@@ -102,13 +119,33 @@ function HomePage() {
                 A warm, friendly chatroom where you can unwind, share your day, and have fun conversations — anytime, anywhere.
               </p>
 
+              {/* Resume card — shows if user has an active chat */}
+              {activeChat && (
+                <button
+                  onClick={() => navigate({ to: "/chat" })}
+                  className="mt-6 flex w-full max-w-sm items-center gap-3 rounded-2xl border border-pink-200 bg-pink-50 px-4 py-3 text-left transition-all hover:bg-pink-100 hover:shadow-md active:scale-95 md:mx-0"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-violet-500 text-sm font-bold text-white">
+                    {activeChat.companion[0]}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-gray-900">{activeChat.companion}</span>
+                      <span className="h-2 w-2 rounded-full bg-green-500" />
+                    </div>
+                    <div className="truncate text-xs text-gray-500">{activeChat.preview}</div>
+                  </div>
+                  <div className="shrink-0 text-xs font-semibold text-pink-600">Continue →</div>
+                </button>
+              )}
+
               {/* Buttons */}
-              <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
+              <div className="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
                 <button
                   onClick={() => navigate({ to: "/start" })}
                   className="rounded-full bg-gradient-to-r from-blue-500 to-pink-500 px-7 py-3.5 text-base font-bold text-white shadow-lg transition-all hover:scale-105 hover:shadow-pink-200 active:scale-95"
                 >
-                  Start Chat →
+                  {activeChat ? "New Chat →" : "Start Chat →"}
                 </button>
                 <button
                   onClick={() => navigate({ to: "/about" })}

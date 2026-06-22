@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Send } from "lucide-react";
 import { sendChat } from "@/lib/chat.functions";
-import { randomTrait } from "@/lib/companions";
 
 export const Route = createFileRoute("/chat")({
   head: () => ({
@@ -37,8 +36,8 @@ function pickFallback(used: Set<string>): string {
 }
 
 function typingDelay(text: string): number {
-  const ms = text.length * 38 + Math.random() * 700;
-  return Math.min(Math.max(ms, 1200), 4000);
+  const ms = text.length * 30 + Math.random() * 500;
+  return Math.min(Math.max(ms, 500), 3500);
 }
 
 function ChatPage() {
@@ -68,10 +67,60 @@ function ChatPage() {
     if (!u || !c) { navigate({ to: "/start" }); return; }
     setUserName(u);
     setCompanion(c);
-    setMessages([]);
+    // Remove any old chat histories that don't belong to the current companion
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key?.startsWith("cm_msgs_") && key !== `cm_msgs_${c}`) {
+          localStorage.removeItem(key);
+        }
+      }
+    } catch {}
+    // Restore chat history for this companion — survive refresh
+    let savedMsgs: Msg[] = [];
+    try {
+      const saved = localStorage.getItem(`cm_msgs_${c}`);
+      savedMsgs = saved ? (JSON.parse(saved) as Msg[]) : [];
+      setMessages(savedMsgs);
+    } catch {
+      setMessages([]);
+    }
     setSeen(false);
     setTyping(false);
-  }, [navigate]);
+
+    // Re-engagement: companion texts first when user returns after being away
+    // sessionStorage clears when tab closes — so this fires once per session, not every refresh
+    const reengageKey = `cm_reengaged_${c}`;
+    if (savedMsgs.length > 0 && sessionStorage.getItem(reengageKey) !== "1") {
+      sessionStorage.setItem(reengageKey, "1");
+      const g = localStorage.getItem("cm_user_gender") as "male" | "female" | null;
+      const delay = 2500 + Math.random() * 2000;
+      const timer = setTimeout(() => {
+        activeCallsRef.current += 1;
+        const history = savedMsgs.slice(-10).map((m) => ({ role: m.role, content: m.content }));
+        send({ data: { messages: history, companionName: c, userName: u, userGender: g ?? undefined, isReengagement: true } })
+          .then(async ({ reply }) => {
+            setTyping(true);
+            await new Promise((r) => setTimeout(r, typingDelay(reply)));
+            setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: reply, time: nowTime() }]);
+          })
+          .catch(() => {})
+          .finally(() => {
+            activeCallsRef.current -= 1;
+            if (activeCallsRef.current === 0) { setSeen(false); setTyping(false); }
+          });
+      }, delay);
+      return () => clearTimeout(timer);
+    }
+  }, [navigate, send]);
+
+  // Persist messages to localStorage whenever they change
+  useEffect(() => {
+    if (!companion || messages.length === 0) return;
+    try {
+      localStorage.setItem(`cm_msgs_${companion}`, JSON.stringify(messages.slice(-100)));
+    } catch {}
+  }, [messages, companion]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -102,10 +151,12 @@ function ChatPage() {
 
     try {
       // Fire API immediately — no latency added
-      const apiPromise = send({ data: { messages: history, companionName: companion, userName } });
+      const userGender = (() => { try { return localStorage.getItem("cm_user_gender") as "male" | "female" | null; } catch { return null; } })();
+      const apiPromise = send({ data: { messages: history, companionName: companion, userName, userGender: userGender ?? undefined } });
 
-      // ~500ms — she "sees" the message
-      await new Promise((r) => setTimeout(r, 400 + Math.random() * 300));
+      // Read delay scales with message length — longer messages take more time to "read"
+      const readMs = Math.min(text.length * 6, 900);
+      await new Promise((r) => setTimeout(r, 250 + readMs + Math.random() * 300));
       setSeen(true);
 
       // ~1–1.4s total — she starts typing
@@ -134,7 +185,10 @@ function ChatPage() {
   };
 
   const endChat = () => {
-    try { localStorage.removeItem("cm_companion"); } catch {}
+    try {
+      localStorage.removeItem("cm_companion");
+      localStorage.removeItem(`cm_msgs_${companion}`);
+    } catch {}
     navigate({ to: "/" });
   };
 
@@ -153,9 +207,7 @@ function ChatPage() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-bold text-gray-900 truncate">{companion}</div>
-            <div className="text-xs text-gray-400">
-              online now{companion ? ` · ${randomTrait(companion)}` : ""}
-            </div>
+            <div className="text-xs text-gray-400">online now</div>
           </div>
           <button
             onClick={() => setConfirmEnd(true)}
@@ -178,7 +230,7 @@ function ChatPage() {
                 {companion[0]}
               </div>
               <div className="text-xl font-bold text-gray-800">{companion}</div>
-              <div className="mt-1 text-sm text-gray-400">{randomTrait(companion)}</div>
+              <div className="mt-1 text-sm text-gray-400">say hi to start chatting</div>
             </div>
           )}
 

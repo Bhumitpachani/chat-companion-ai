@@ -1,4 +1,4 @@
-// Unique Indian girl names pool — picked randomly, never repeat in same browser
+// Female companion names — for male users
 export const COMPANION_NAMES = [
   "Priya", "Ananya", "Aisha", "Riya", "Diya", "Kavya", "Sneha", "Ishita",
   "Meera", "Pooja", "Nidhi", "Tanvi", "Aditi", "Shreya", "Neha", "Simran",
@@ -10,42 +10,39 @@ export const COMPANION_NAMES = [
   "Charvi", "Devika", "Gauri", "Heena", "Inaya", "Juhi", "Khushi", "Lipika",
 ];
 
-const STORAGE_KEY = "cm_used_names";
+// Male companion names — for female users
+export const COMPANION_NAMES_MALE = [
+  "Arjun", "Rohan", "Aditya", "Karan", "Dev", "Vikram", "Aman", "Varun",
+  "Neil", "Kabir", "Ishaan", "Rishi", "Ankit", "Ayush", "Dhruv", "Pranav",
+  "Yash", "Rahul", "Siddharth", "Akash", "Nikhil", "Gaurav", "Tanmay", "Shreyas",
+  "Mihir", "Veer", "Aryan", "Kunal", "Sahil", "Parth", "Aniket", "Harsh",
+  "Shivam", "Kartik", "Lakshya", "Naman", "Omkar", "Prateek", "Raghav", "Sameer",
+  "Tushar", "Uday", "Vinay", "Waqar", "Xav", "Yuvraj", "Zaid", "Abhishek",
+  "Bhuvan", "Chirag", "Deepak", "Eshan", "Farhan", "Gautam", "Hemant", "Ishan",
+];
 
-export function pickUniqueCompanion(): string {
+function pickUnique(names: string[], storageKey: string): string {
   let used: string[] = [];
   try {
-    used = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    used = JSON.parse(localStorage.getItem(storageKey) || "[]");
   } catch {}
-  let pool = COMPANION_NAMES.filter((n) => !used.includes(n));
+  let pool = names.filter((n) => !used.includes(n));
   if (pool.length === 0) {
-    // reset cycle
     used = [];
-    pool = COMPANION_NAMES;
+    pool = names;
   }
   const name = pool[Math.floor(Math.random() * pool.length)];
   used.push(name);
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(used));
+    localStorage.setItem(storageKey, JSON.stringify(used));
   } catch {}
   return name;
 }
 
-export const COMPANION_TRAITS = [
-  "Loves Bollywood music 🎶",
-  "Foodie at heart 🍕",
-  "Coffee addict ☕",
-  "Travel enthusiast ✈️",
-  "Bookworm 📚",
-  "Dance lover 💃",
-  "Yoga & wellness 🧘",
-  "Cricket fan 🏏",
-  "Photography hobbyist 📸",
-  "Sunset chaser 🌇",
-];
+export function pickUniqueCompanion(): string {
+  return pickUnique(COMPANION_NAMES, "cm_used_names");
+}
 
-export function randomTrait(seed: string): string {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  return COMPANION_TRAITS[h % COMPANION_TRAITS.length];
+export function pickUniqueCompanionMale(): string {
+  return pickUnique(COMPANION_NAMES_MALE, "cm_used_names_male");
 }
