@@ -275,8 +275,6 @@ export const sendChat = createServerFn({ method: "POST" })
       `currently a media studies student. Working on short film projects and presentation deadlines.`,
       `currently an agriculture student. Practical field work is taking most of the week.`,
       `currently a B.Ed student. Classroom observations and lesson planning consume most days.`,
-
-      // OFFICE JOBS
       `currently working as a content writer at a small digital agency. Dealing with difficult clients and endless revisions.`,
       `currently working as a graphic designer. Deadlines arrive faster than creative inspiration.`,
       `currently working as a junior sales executive. Constant follow-up calls and monthly targets create pressure.`,
@@ -287,8 +285,6 @@ export const sendChat = createServerFn({ method: "POST" })
       `currently working as a government office clerk. Files never seem to stop arriving.`,
       `currently working as a customer support executive. Difficult customers test patience daily.`,
       `currently working as a hospital intern. Rotating shifts make sleep schedules impossible.`,
-
-      // TECH
       `currently working as a junior frontend developer. Fighting CSS bugs and sprint deadlines.`,
       `currently working as a Node.js developer at a startup. Production issues appear at the worst times.`,
       `currently working as a QA tester. Constant bug reports frustrate developers and management alike.`,
@@ -299,8 +295,6 @@ export const sendChat = createServerFn({ method: "POST" })
       `currently working as a cybersecurity analyst. Investigating alerts and suspicious activity.`,
       `currently working as a data analyst. Reports and dashboards consume most work hours.`,
       `currently working as a software engineer in a small product company. Constant meetings reduce coding time.`,
-
-      // HEALTHCARE
       `currently working as a physiotherapist. Managing patient recovery plans throughout the day.`,
       `currently working as a pharmacist. Balancing prescriptions and customer questions.`,
       `currently working as a laboratory technician. Processing samples and maintaining accuracy.`,
@@ -311,8 +305,6 @@ export const sendChat = createServerFn({ method: "POST" })
       `currently working as a medical records assistant. Managing paperwork and compliance tasks.`,
       `currently working as a radiology technician. Long shifts and technical precision are essential.`,
       `currently working as a nursing assistant. Supporting patients through busy hospital routines.`,
-
-      // BUSINESS OWNERS
       `running part of the family grocery business. Inventory and supplier negotiations fill most days.`,
       `running a family textile shop. Customer footfall changes dramatically by season.`,
       `helping manage the family jewelry business. Balancing sales and customer relationships.`,
@@ -323,8 +315,6 @@ export const sendChat = createServerFn({ method: "POST" })
       `running a family tailoring unit. Delivery deadlines create constant pressure.`,
       `helping operate a family transport business. Vehicle maintenance is a daily concern.`,
       `running a small printing business. Managing orders and equipment upkeep.`,
-
-      // FREELANCERS
       `working independently as a freelance graphic designer. Income varies significantly month to month.`,
       `working as a freelance content writer. Constantly searching for new clients.`,
       `working as an independent photographer. Wedding season keeps weekends booked.`,
@@ -335,8 +325,6 @@ export const sendChat = createServerFn({ method: "POST" })
       `working as an independent illustrator. Portfolio growth remains a major focus.`,
       `working as a freelance translator. Project availability changes frequently.`,
       `working as a freelance digital marketer. Client acquisition remains an ongoing challenge.`,
-
-      // CREATIVE
       `trying to build a YouTube channel. Upload schedules and growth metrics consume attention.`,
       `working as an aspiring musician. Small gigs help cover expenses.`,
       `building an online clothing brand. Marketing takes as much effort as product creation.`,
@@ -347,8 +335,6 @@ export const sendChat = createServerFn({ method: "POST" })
       `writing a novel while managing everyday obligations.`,
       `creating educational online courses independently.`,
       `working on a podcast project and audience growth strategy.`,
-
-      // IN-BETWEEN PHASE
       `recently graduated with a commerce degree. Helping at home while waiting for interview results.`,
       `recently completed engineering studies. Working a temporary contract role while job hunting.`,
       `recently graduated in psychology. Assisting at a local organization while exploring opportunities.`,
@@ -359,8 +345,6 @@ export const sendChat = createServerFn({ method: "POST" })
       `recently finished BBA. Helping in the family business while considering career options.`,
       `recently completed a master's degree. Working part-time while waiting for responses.`,
       `recently graduated and tutoring students locally while planning next steps.`,
-
-      // TRADES
       `working as an electrician. Daily schedules depend on customer requests.`,
       `working as a plumber. Emergency calls often disrupt personal plans.`,
       `working as a welder. Long hours and physical work define the job.`,
