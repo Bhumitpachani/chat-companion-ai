@@ -89,8 +89,9 @@ function ChatPage() {
     setTimeout(() => { justSentRef.current = false; }, 300);
 
     const userMsg: Msg = { id: crypto.randomUUID(), role: "user", content: text, time: nowTime() };
-    // Snapshot history before clearing input — captures all messages including concurrent ones
-    const history = [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
+    // Keep last 40 messages — plenty of context, never hits server limit
+    const allMsgs = [...messages, userMsg];
+    const history = allMsgs.slice(-40).map((m) => ({ role: m.role, content: m.content }));
     setMessages((m) => [...m, userMsg]);
     setInput("");
 
