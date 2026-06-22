@@ -48,13 +48,16 @@ function ChatPage() {
   const [companion, setCompanion] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
-  const [sending, setSending] = useState(false);
   const [typing, setTyping] = useState(false);
   const [seen, setSeen] = useState(false);
   const [confirmEnd, setConfirmEnd] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fallbackUsed = useRef<Set<string>>(new Set());
+  // Tracks concurrent in-flight sends — typing indicator stays on until all complete
+  const activeCallsRef = useRef(0);
+  // Debounce: prevents double-fire if user taps Send twice fast
+  const justSentRef = useRef(false);
 
   useEffect(() => {
     let u = "", c = "";
@@ -71,7 +74,7 @@ function ChatPage() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, typing]);
 
-  useEffect(() => { inputRef.current?.focus(); }, [companion, sending]);
+  useEffect(() => { inputRef.current?.focus(); }, [companion]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void submitMessage(); }
@@ -79,24 +82,29 @@ function ChatPage() {
 
   const submitMessage = async () => {
     const text = input.trim();
-    if (!text || sending) return;
+    if (!text || justSentRef.current) return;
+
+    // Brief debounce — prevents double-fire on fast taps, clears in 300ms
+    justSentRef.current = true;
+    setTimeout(() => { justSentRef.current = false; }, 300);
 
     const userMsg: Msg = { id: crypto.randomUUID(), role: "user", content: text, time: nowTime() };
+    // Snapshot history before clearing input — captures all messages including concurrent ones
+    const history = [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
     setMessages((m) => [...m, userMsg]);
     setInput("");
-    setSending(true);
+
+    activeCallsRef.current += 1;
 
     try {
-      const history = [...messages, userMsg].map((m) => ({ role: m.role, content: m.content }));
-
-      // Fire the API call right away so there's no added latency
+      // Fire API immediately — no latency added
       const apiPromise = send({ data: { messages: history, companionName: companion, userName } });
 
-      // After ~500ms she "sees" the message — show Seen indicator
+      // ~500ms — she "sees" the message
       await new Promise((r) => setTimeout(r, 400 + Math.random() * 300));
       setSeen(true);
 
-      // After another 0.8–1.4s she starts typing — hide Seen, show typing
+      // ~1–1.4s total — she starts typing
       await new Promise((r) => setTimeout(r, 800 + Math.random() * 600));
       setSeen(false);
       setTyping(true);
@@ -112,9 +120,12 @@ function ChatPage() {
       await new Promise((r) => setTimeout(r, typingDelay(fallback)));
       setMessages((m) => [...m, { id: crypto.randomUUID(), role: "assistant", content: fallback, time: nowTime() }]);
     } finally {
-      setSeen(false);
-      setTyping(false);
-      setSending(false);
+      activeCallsRef.current -= 1;
+      // Only clear indicators once ALL in-flight calls have finished
+      if (activeCallsRef.current === 0) {
+        setSeen(false);
+        setTyping(false);
+      }
     }
   };
 
@@ -244,8 +255,7 @@ function ChatPage() {
             placeholder={`Message ${companion || ""}…`}
             maxLength={2000}
             rows={1}
-            disabled={sending}
-            className="flex-1 resize-none overflow-hidden rounded-full border border-gray-300 bg-gray-50 px-5 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 disabled:opacity-60 transition-colors"
+            className="flex-1 resize-none overflow-hidden rounded-full border border-gray-300 bg-gray-50 px-5 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-colors"
             style={{ maxHeight: "128px", scrollbarWidth: "none" }}
             onInput={(e) => {
               const t = e.currentTarget;
@@ -256,7 +266,7 @@ function ChatPage() {
           <button
             type="button"
             onClick={() => void submitMessage()}
-            disabled={!input.trim() || sending}
+            disabled={!input.trim()}
             className="shrink-0 flex h-10 w-10 items-center justify-center rounded-full text-white transition-all hover:scale-105 active:scale-95 disabled:opacity-30"
             style={{ background: "linear-gradient(135deg, #6366f1, #ec4899)" }}
           >
