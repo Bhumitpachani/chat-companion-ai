@@ -68,6 +68,9 @@ function ChatPage() {
     if (!u || !c) { navigate({ to: "/start" }); return; }
     setUserName(u);
     setCompanion(c);
+    setMessages([]);
+    setSeen(false);
+    setTyping(false);
   }, [navigate]);
 
   useEffect(() => {
