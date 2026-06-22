@@ -6,7 +6,8 @@
       "Bash(bun run *)",
       "Bash(~/.bun/bin/bun run *)",
       "Read(//c/Users/STAFF1/AppData/Local/bun/**)",
-      "Read(//c/Users/STAFF1/**)"
+      "Read(//c/Users/STAFF1/**)",
+      "Bash(node -e ' *)"
     ]
   }
 }

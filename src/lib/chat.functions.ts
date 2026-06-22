@@ -77,10 +77,10 @@ function getPersonality(name: string): string {
   ];
 
   const energy  = energies[h % energies.length];
-  const flavor  = flavors[(h >> 4) % flavors.length];
-  const flirt   = flirtStyles[(h >> 8) % flirtStyles.length];
-  const quirk   = quirks[(h >> 12) % quirks.length];
-  const voice   = voices[(h >> 16) % voices.length];
+  const flavor  = flavors[(h >>> 4) % flavors.length];
+  const flirt   = flirtStyles[(h >>> 8) % flirtStyles.length];
+  const quirk   = quirks[(h >>> 12) % quirks.length];
+  const voice   = voices[(h >>> 16) % voices.length];
 
   return `${name}'s energy: ${energy}
 
@@ -149,10 +149,10 @@ function getMalePersonality(name: string): string {
   ];
 
   const energy  = energies[h % energies.length];
-  const flavor  = flavors[(h >> 4) % flavors.length];
-  const flirt   = flirtStyles[(h >> 8) % flirtStyles.length];
-  const quirk   = quirks[(h >> 12) % quirks.length];
-  const voice   = voices[(h >> 16) % voices.length];
+  const flavor  = flavors[(h >>> 4) % flavors.length];
+  const flirt   = flirtStyles[(h >>> 8) % flirtStyles.length];
+  const quirk   = quirks[(h >>> 12) % quirks.length];
+  const voice   = voices[(h >>> 16) % voices.length];
 
   return `${name}'s energy: ${energy}\n\n${flavor}\n\n${flirt}\n\n${quirk}\n\n${voice}`;
 }
@@ -188,7 +188,7 @@ export const sendChat = createServerFn({ method: "POST" })
     let ah = 0;
     for (let i = 0; i < data.companionName.length; i++) ah = (ah * 31 + data.companionName.charCodeAt(i)) >>> 0;
     const ages = [19, 20, 20, 21, 21, 22, 22, 22, 23, 23, 24, 25];
-    const companionAge = ages[(ah >> 6) % ages.length];
+    const companionAge = ages[(ah >>> 6) % ages.length];
     const companionGender = isFemaleUser ? "guy" : "girl";
 
     // City profile — seeds region + city size so every companion feels geographically distinct
@@ -220,17 +220,19 @@ export const sendChat = createServerFn({ method: "POST" })
       "a smaller district town",
       "a village or very small town — real rural India with everything that means",
     ];
-    const companionCityRegion = cityRegions[(ah >> 8) % cityRegions.length];
-    const companionCityTier = cityTiers[(ah >> 12) % cityTiers.length];
+    const companionCityRegion = cityRegions[(ah >>> 8) % cityRegions.length];
+    const companionCityTier = cityTiers[(ah >>> 12) % cityTiers.length];
 
-    // Occupation seeded from name hash — prevents all companions defaulting to college
+    // Occupation — use golden-ratio mix so spread is even across all name lengths
+    // MUST use >>> not >> — signed shift returns negatives for hashes > 2^31, breaking % entirely
+    const occH = Math.imul(ah ^ (ah >>> 16), 0x9e3779b9) >>> 0;
     const occupationSeeds = [
-      `college student — pick a specific year (1st/2nd/3rd/final) and a real subject. Metro/big city: a known college, subjects like law, BBA, psychology, media, architecture, fashion, nursing, commerce, arts. Small town/village: a local degree college or a government college in the nearest town — B.A., B.Sc., B.Com., B.Ed., agriculture, nursing are all common. Real college life either way: exams, canteen or hostel mess, group projects, that one professor everyone hates`,
-      `working — a real job that makes sense for where you live. City: content writer, graphic designer, sales, startup, HR, social media manager, junior doctor, bank clerk. Small town/village: school teacher, anganwadi/NGO worker, government employee, bank staff, local healthcare, small shop or tailoring work, or helping run the family business. Real work life: deadlines, a difficult boss or colleague, commute or walk to work, salary anxiety`,
-      `recently graduated — done with college, now figuring out what comes next. Maybe preparing for a competitive exam (CAT/UPSC/NEET/SSC/state PSC), waiting for results somewhere, hunting for work, doing a short course online, or just in that in-between phase where nothing is decided yet`,
-      `doing something non-standard for your age — helping run the family business or farm, freelancing (design/content/tutoring/stitching/baking), something creative or self-made. If from a village: it could be farming-adjacent, running a small kirana, teaching local kids. If from a city: more likely a self-started hustle. Specific and real, never vague`,
+      `currently a college student — NOT working, NOT graduated yet. Pick: a specific year (1st/2nd/3rd/final), a real subject that isn't always engineering (law, BBA, psychology, media studies, arts, architecture, nursing, commerce, fashion design, agriculture, B.Ed.). Real college name for your area. Real college life: pending assignment, upcoming exam, canteen food, hostel or long commute, that one professor everyone hates`,
+      `currently working a real job — you are NOT a student, NOT in college at all. Pick a specific role: content writer at a small agency, graphic designer, junior sales exec, school teacher, HR assistant, bank clerk, NGO program officer, junior doctor/hospital intern, retail staff, government office clerk. Small town: local teacher, bank employee, health worker, shop assistant. Real work life: Monday dread, office politics, difficult colleague, salary day, commute`,
+      `doing your own thing — NOT in college, NOT in any regular job. Pick one: running part of the family business (shop, farm, catering, tailoring unit), freelancing independently (design/content/tutoring/photography/baking), or something creative you built yourself. Daily life mixes freedom and uncertainty — no fixed salary, no fixed hours`,
+      `recently finished college, now in that in-between phase — NOT studying for any exam, NOT enrolled anywhere. You have something small going on: a part-time gig, a contract job, helping at home, waiting to hear back on something. Life feels unresolved. Pick one specific real thing you're doing day-to-day right now, not "figuring out life" in the abstract`,
     ];
-    const companionOccupation = occupationSeeds[(ah >> 14) % occupationSeeds.length];
+    const companionOccupation = occupationSeeds[occH % occupationSeeds.length];
 
     // Random moment — different every conversation, sets the tonal starting point
     const moments = [
@@ -248,7 +250,7 @@ export const sendChat = createServerFn({ method: "POST" })
     const hourStamp = now.getFullYear() * 100000 + (now.getMonth() + 1) * 1000 + now.getDate() * 100 + now.getHours();
     let mh = 0;
     for (let i = 0; i < data.companionName.length; i++) mh = (mh * 31 + data.companionName.charCodeAt(i)) >>> 0;
-    const rightNow = moments[(mh ^ hourStamp) % moments.length];
+    const rightNow = moments[((mh ^ hourStamp) >>> 0) % moments.length];
 
     const reengageNote = data.isReengagement
       ? `\nRE-ENTRY: ${userName} just came back after being away. Send ONE very short natural message to pick up where things left off — "arre finally" / "kahan tha" / continue something that was hanging / share something that just happened. Don't explain the gap. No greeting. Just natural re-entry.`
