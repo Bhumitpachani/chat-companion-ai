@@ -159,8 +159,10 @@ function ChatPage() {
       await new Promise((r) => setTimeout(r, 250 + readMs + Math.random() * 300));
       setSeen(true);
 
-      // ~1–1.4s total — she starts typing
-      await new Promise((r) => setTimeout(r, 800 + Math.random() * 600));
+      // ~20% of the time she's mid-something — saw the message, finished what she was doing first
+      const isBusy = Math.random() < 0.20;
+      const thinkGap = isBusy ? 1800 + Math.random() * 2200 : 700 + Math.random() * 600;
+      await new Promise((r) => setTimeout(r, thinkGap));
       setSeen(false);
       setTyping(true);
 
